@@ -28,9 +28,7 @@
       "endDate": "04/2023",
       "responsibilities":
       [ "Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients",
-        "Transformed Figma designs into functional web interfaces with pixel-perfect accuracy",
         "Implemented Tailwind CSS frameworks across 15+ client projects, ensuring consistent branding",
-        "Debugged and resolved cross-browser compatibility issues for major browsers (Chrome, Safari, Firefox)",
         "Managed version control using Git/GitHub and deployed projects to Vercel hosting platform" ]
     }
   ],
