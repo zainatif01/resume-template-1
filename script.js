@@ -131,6 +131,11 @@ function renderEducation(education) {
     `).join('');
 }
 
+// -------- PDF LAYOUT CONSTANTS --------
+const LINE_HEIGHT = 5;
+const SECTION_SPACING = 10;
+const ITEM_SPACING = 8;
+
 // ---------------- PDF ----------------
 function setupPDFDownload() {
     document.getElementById('download-pdf-btn')
@@ -145,11 +150,6 @@ function setupPDFDownload() {
         const left = 15;
         const right = 195;
         let y = 20;
-        
-        // Consistent spacing constants
-        const LINE_HEIGHT = 5; // Consistent line spacing for all content
-        const SECTION_SPACING = 10; // Space after section titles
-        const ITEM_SPACING = 8; // Space between items (jobs, education entries)
 
         // -------- HEADER --------
         pdf.setFont('times', 'bold');
