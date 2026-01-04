@@ -245,12 +245,6 @@ function setupPDFDownload() {
     });
 }
 
-function sectionTitle(pdf, text, x, y) {
-    pdf.setFontSize(12);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(text, x, y);
-    pdf.setFont('helvetica', 'normal');
-}
 
 function addParagraph(pdf, text, x, y, pageWidth, lineHeight) {
     const lines = pdf.splitTextToSize(text, pageWidth - x - 15);
