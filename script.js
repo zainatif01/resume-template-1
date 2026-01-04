@@ -7,7 +7,7 @@ async function loadResumeData() {
     const resumeContainer = document.getElementById('resume-content');
 
     try {
-        const response = await fetch('resume-data.json');
+        const response = await fetch(`resume-data.json?v=${DATA_VERSION}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
