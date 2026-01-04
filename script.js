@@ -6,7 +6,6 @@ function formatDate(value) {
 }
 
 // ---------------- LOAD JSON ----------------
-// Function to load and parse the JSON data
 async function loadResumeData() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const resumeContainer = document.getElementById('resume-content');
