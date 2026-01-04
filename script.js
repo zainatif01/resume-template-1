@@ -142,114 +142,77 @@ function setupPDFDownload() {
             const response = await fetch(`resume-data.json?version=${Date.now()}`);
             const data = await response.json();
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = 210;
             const margin = 15;
             let y = 20;
-            const lineHeight = 6;
-            const maxWidth = pageWidth - 2 * margin;
-
-            // Name
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(18);
+            
+            // NAME
+            pdf.setFont("times", "bold");
+            pdf.setFontSize(20);
             pdf.text(data.personal.name, margin, y);
-            y += 10;
-
-            // Title
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(14);
-            pdf.text(data.personal.title, margin, y);
-            y += 8;
-
-            // Contact
-            pdf.setFontSize(10);
-            pdf.text(`${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`, margin, y);
-            y += 10;
-
-            // Horizontal line (assuming thin black line based on typical resume layouts)
-            pdf.setDrawColor(200, 200, 200);
-            pdf.line(margin, y, pageWidth - margin, y);
-            y += 10;
-
-            // PROFESSIONAL SUMMARY
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(12);
-            pdf.text('PROFESSIONAL SUMMARY', margin, y);
             y += 6;
-            pdf.setFont('helvetica', 'normal');
+            
+            // CONTACT LINE
+            pdf.setFont("times", "normal");
             pdf.setFontSize(10);
-            y = addParagraph(pdf, data.summary, margin, y, maxWidth, lineHeight);
+            pdf.text(
+              `${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`,
+              margin,
+              y
+            );
             y += 8;
-
-            // WORK EXPERIENCE
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(12);
-            pdf.text('WORK EXPERIENCE', margin, y);
+            
+            drawRule(pdf, y);
             y += 6;
-            pdf.setFont('helvetica', 'normal');
+            
+            // SECTION: EXPERIENCE
+            sectionTitle(pdf, "EXPERIENCE", margin, y);
+            y += 6;
+            
             data.workExperience.forEach(job => {
-                pdf.setFont('helvetica', 'bold');
+                pdf.setFont("times", "bold");
                 pdf.setFontSize(11);
-                const jobLine = `${job.position}   ${job.company} | ${job.location} | ${job.startDate} - ${job.endDate}`;
-                y = addParagraph(pdf, jobLine, margin, y, maxWidth, lineHeight - 1);
-                pdf.setFont('helvetica', 'normal');
+                pdf.text(job.company, margin, y);
+            
+                pdf.setFont("times", "normal");
+                pdf.text(`${job.startDate} - ${job.endDate}`, 150, y);
+                y += 5;
+            
                 pdf.setFontSize(10);
-                job.responsibilities.forEach(resp => {
-                    y = addParagraph(pdf, `• ${resp}`, margin, y, maxWidth, lineHeight);
+                pdf.text(`${job.position}, ${job.location}`, margin, y);
+                y += 5;
+            
+                job.responsibilities.forEach(r => {
+                    pdf.text(`- ${r}`, margin + 4, y);
+                    y += 4;
                 });
-                y += 4;
+            
+                y += 3;
             });
-            y += 4;
-
+            
             // EDUCATION
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(12);
-            pdf.text('EDUCATION', margin, y);
+            sectionTitle(pdf, "EDUCATION", margin, y);
             y += 6;
-            pdf.setFont('helvetica', 'normal');
+            
             data.education.forEach(edu => {
-                pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(11);
-                const eduLine = `${edu.degree}   ${edu.institution} | ${edu.completionDate}`;
-                y = addParagraph(pdf, eduLine, margin, y, maxWidth, lineHeight - 1);
+                pdf.setFont("times", "bold");
+                pdf.text(edu.institution, margin, y);
                 y += 4;
+            
+                pdf.setFont("times", "normal");
+                pdf.text(`${edu.degree} — ${edu.completionDate}`, margin, y);
+                y += 6;
             });
-            y += 8;
-
+            
             // SKILLS
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(12);
-            pdf.text('SKILLS', margin, y);
+            sectionTitle(pdf, "SKILLS", margin, y);
             y += 6;
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(10);
-            const technicalSkills = `Technical: ${data.skills.technical.join(', ')}`;
-            y = addParagraph(pdf, technicalSkills, margin, y, maxWidth, lineHeight);
-            y += 4;
-            const professionalSkills = `Professional: ${data.skills.professional.join(', ')}`;
-            y = addParagraph(pdf, professionalSkills, margin, y, maxWidth, lineHeight);
-            y += 8;
-
-            // LANGUAGES
-            pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(12);
-            pdf.text('LANGUAGES', margin, y);
-            y += 6;
-            pdf.setFont('helvetica', 'normal');
-            pdf.setFontSize(10);
-            const languagesText = data.languages.map(lang => `${lang.name} (${lang.level})`).join(', ');
-            y = addParagraph(pdf, languagesText, margin, y, maxWidth, lineHeight);
-
-            // SAVE PDF
-            const filename = `${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`;
-            pdf.save(filename);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to generate PDF.');
-        } finally {
-            this.innerHTML = originalText;
-            this.disabled = false;
-        }
+            
+            pdf.text(
+              [...data.skills.technical, ...data.skills.professional].join(", "),
+              margin,
+              y,
+              { maxWidth: 180 }
+            );
     });
 }
 // ---------------- HELPER FUNCTIONS ----------------
