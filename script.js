@@ -306,7 +306,7 @@ function setupPDFDownload() {
             }
         }
        
-        y += 2; // Add spacing before Languages
+        y += ITEM_SPACING; // Add spacing before Languages
        
         // Languages section
         y = checkPageBreak(pdf, y, LINE_HEIGHT * 4);
