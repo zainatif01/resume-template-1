@@ -296,10 +296,10 @@ function checkPageBreak(pdf, y, reserveHeight = 0) {
 }
 
 function startSection(pdf, title, x, y) {
-    y = checkPageBreak(pdf, y, SECTION_GAP + 6);
-    y += SECTION_GAP;
+    y = checkPageBreak(pdf, y, SECTION_SPACING + 6);
+    y += SECTION_SPACING;
     sectionTitle(pdf, title, x, y);
-    return y + SECTION_GAP;
+    return y + SECTION_SPACING;
 }
 
 // Initialize the resume when the page loads
