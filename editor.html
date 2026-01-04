@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Editor</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .editor-container { max-width: 800px; margin: 0 auto; }
+        textarea { width: 100%; height: 400px; font-family: monospace; }
+        button { padding: 10px 20px; margin: 10px 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <h1>Resume JSON Editor</h1>
+        <p>Edit your resume data in JSON format below:</p>
+        <textarea id="json-editor"></textarea>
+        <div>
+            <button onclick="loadCurrentData()">Load Current</button>
+            <button onclick="validateJSON()">Validate JSON</button>
+            <button onclick="saveJSON()">Save Changes</button>
+            <button onclick="viewResume()">View Resume</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        async function loadCurrentData() {
+            try {
+                const response = await fetch('resume-data.json');
+                const data = await response.json();
+                document.getElementById('json-editor').value = JSON.stringify(data, null, 2);
+                showMessage('Data loaded successfully!', 'success');
+            } catch (error) {
+                showMessage('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        function validateJSON() {
+            try {
+                JSON.parse(document.getElementById('json-editor').value);
+                showMessage('JSON is valid!', 'success');
+            } catch (error) {
+                showMessage('Invalid JSON: ' + error.message, 'error');
+            }
+        }
+
+        async function saveJSON() {
+            try {
+                const jsonText = document.getElementById('json-editor').value;
+                JSON.parse(jsonText); // Validate first
+                
+                // Note: In a real implementation, you would send this to a server
+                // For client-side only, we can use localStorage or download
+                localStorage.setItem('resumeData', jsonText);
+                showMessage('Data saved to browser storage!', 'success');
+                
+                // Optional: Download as file
+                const blob = new Blob([jsonText], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'resume-data-backup.json';
+                a.click();
+            } catch (error) {
+                showMessage('Error saving: ' + error.message, 'error');
+            }
+        }
+
+        function viewResume() {
+            window.open('index.html', '_blank');
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = type;
+            setTimeout(() => messageDiv.textContent = '', 3000);
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadCurrentData);
+    </script>
+</body>
+</html>
