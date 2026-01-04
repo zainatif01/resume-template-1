@@ -142,142 +142,59 @@ function renderEducation(education) {
     `).join('');
 }
 
-// High-quality PDF generation function
-async function generateHighQualityPDF() {
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const originalButton = document.querySelector('.download-btn');
-    const originalButtonHTML = originalButton.innerHTML;
+// Simplified PDF generation function
+async function generatePDF() {
+    console.log('Generating PDF...'); // Debug log
+    
+    const downloadBtn = document.getElementById('download-pdf-btn');
+    const originalHTML = downloadBtn.innerHTML;
     
     try {
-        // Show loading overlay for PDF generation
-        loadingOverlay.style.display = 'flex';
-        loadingOverlay.classList.remove('hidden');
+        // Update button to show loading state
+        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+        downloadBtn.disabled = true;
         
-        // Update button to show processing state
-        originalButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
-        originalButton.disabled = true;
-        
-        // Clone the resume container for PDF generation
+        // Get the resume element
         const element = document.getElementById('resume-content');
-        const clone = element.cloneNode(true);
         
-        // Remove the download button from the clone
-        const cloneDownloadBtn = clone.querySelector('.download-btn');
-        if (cloneDownloadBtn) {
-            cloneDownloadBtn.remove();
-        }
-        
-        // Apply PDF-specific styles to the clone
-        clone.style.width = '1000px';
-        clone.style.maxWidth = '1000px';
-        clone.style.margin = '0';
-        clone.style.boxShadow = 'none';
-        
-        // Create a temporary container for PDF generation
-        const pdfContainer = document.createElement('div');
-        pdfContainer.className = 'pdf-export-container';
-        pdfContainer.style.position = 'fixed';
-        pdfContainer.style.left = '-9999px';
-        pdfContainer.style.top = '-9999px';
-        pdfContainer.style.width = '1000px';
-        pdfContainer.style.backgroundColor = '#ffffff';
-        pdfContainer.style.padding = '40px';
-        pdfContainer.appendChild(clone);
-        document.body.appendChild(pdfContainer);
-        
-        // Configure html2canvas options for high quality
-        const canvasOptions = {
-            scale: 2, // Double resolution for better quality
+        // Use html2canvas with optimized settings
+        const canvas = await html2canvas(element, {
+            scale: 2, // Higher resolution
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false,
-            allowTaint: true,
-            removeContainer: true,
-            onclone: function(doc) {
-                // Ensure all styles are properly applied
-                const pdfElement = doc.querySelector('.pdf-export-container');
-                if (pdfElement) {
-                    pdfElement.style.width = '1000px';
-                    pdfElement.style.maxWidth = '1000px';
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight,
+            onclone: function(clonedDoc) {
+                // Hide the download button in the cloned version
+                const clonedDownloadBtn = clonedDoc.querySelector('.download-btn');
+                if (clonedDownloadBtn) {
+                    clonedDownloadBtn.style.display = 'none';
                 }
-                
-                // Inject print styles
-                const style = doc.createElement('style');
-                style.innerHTML = `
-                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-                    * {
-                        font-family: 'Inter', sans-serif !important;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                    }
-                    body, html { margin: 0; padding: 0; }
-                    .download-section { display: none !important; }
-                `;
-                doc.head.appendChild(style);
             }
-        };
-        
-        // Generate canvas from the clone
-        const canvas = await html2canvas(pdfContainer, canvasOptions);
-        
-        // Clean up temporary container
-        document.body.removeChild(pdfContainer);
-        
-        // Calculate PDF dimensions (A4: 210mm x 297mm, 1mm ≈ 3.78px)
-        const pdfWidth = 210; // mm
-        const pdfHeight = 297; // mm
-        const scaleToPx = 3.78;
-        
-        // Calculate image dimensions to fit A4 with margins
-        const margin = 10; // mm margin on each side
-        const maxWidth = (pdfWidth - (margin * 2)) * scaleToPx;
-        const maxHeight = (pdfHeight - (margin * 2)) * scaleToPx;
-        
-        // Calculate scaling to fit within A4
-        const scale = Math.min(
-            maxWidth / canvas.width,
-            maxHeight / canvas.height,
-            1
-        );
-        
-        const imgWidth = canvas.width * scale;
-        const imgHeight = canvas.height * scale;
-        
-        // Convert dimensions to mm for PDF
-        const imgWidthMM = imgWidth / scaleToPx;
-        const imgHeightMM = imgHeight / scaleToPx;
-        
-        // Calculate position to center on page
-        const xPos = (pdfWidth - imgWidthMM) / 2;
-        const yPos = (pdfHeight - imgHeightMM) / 2;
-        
-        // Create PDF
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
         });
+        
+        // Create PDF with jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Calculate dimensions
+        const imgWidth = 190; // A4 width (210mm) minus 20mm margins
+        const imgHeight = canvas.height * imgWidth / canvas.width;
         
         // Add image to PDF
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        pdf.addImage(imgData, 'JPEG', xPos, yPos, imgWidthMM, imgHeightMM);
+        const imgData = canvas.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
         
-        // Add footer with generation date
-        const date = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        pdf.setFontSize(9);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text(`Generated on ${date}`, pdfWidth / 2, pdfHeight - 5, { align: 'center' });
+        // Add footer
+        const date = new Date().toLocaleDateString();
+        pdf.setFontSize(10);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text(`Generated on ${date}`, 105, 285, { align: 'center' });
         
-        // Save PDF with personalized filename
+        // Save PDF
         const name = document.getElementById('resume-name').textContent || 'resume';
-        const cleanName = name.replace(/\s+/g, '_').replace(/[^\w\s-]/g, '');
-        const filename = `${cleanName}_Resume.pdf`;
-        
+        const filename = name.replace(/\s+/g, '_').toLowerCase() + '_resume.pdf';
         pdf.save(filename);
         
     } catch (error) {
@@ -285,89 +202,45 @@ async function generateHighQualityPDF() {
         alert('Failed to generate PDF. Please try again.');
     } finally {
         // Restore button state
-        if (originalButton) {
-            originalButton.innerHTML = originalButtonHTML;
-            originalButton.disabled = false;
-        }
-        
-        // Hide loading overlay
-        loadingOverlay.classList.add('hidden');
-        setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-        }, 600);
+        downloadBtn.innerHTML = originalHTML;
+        downloadBtn.disabled = false;
     }
 }
 
-// Setup download button functionality
+// Setup download button functionality - SIMPLIFIED VERSION
 function setupDownloadButton() {
-    const downloadBtn = document.querySelector('.download-btn');
+    const downloadBtn = document.getElementById('download-pdf-btn');
     
     if (!downloadBtn) {
-        console.warn('Download button not found');
+        console.error('Download button not found!');
         return;
     }
     
-    // Remove any existing event listeners by cloning the button
+    console.log('Setting up download button...'); // Debug log
+    
+    // Remove any existing event listeners
     const newBtn = downloadBtn.cloneNode(true);
     downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
     
-    // Set up new event listener
-    newBtn.addEventListener('click', function(e) {
+    // Add click event
+    newBtn.addEventListener('click', async function(e) {
         e.preventDefault();
-        generateHighQualityPDF();
+        console.log('Button clicked!'); // Debug log
+        await generatePDF();
     });
     
-    // Update button text and icon
-    newBtn.innerHTML = '<i class="fas fa-download"></i> Generate PDF Resume';
+    console.log('Download button setup complete'); // Debug log
 }
 
 // Initialize the resume when the page loads
-document.addEventListener('DOMContentLoaded', loadResumeData);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, starting resume load...');
+    loadResumeData();
+});
 
-// Optional: Add function to update JSON from a form (for advanced use)
-function updateResumeData(newData) {
-    // This function could be expanded to save data back to JSON
-    // Note: This requires server-side implementation for actual saving
-    console.log('Data updated (simulated):', newData);
-    renderResume(newData);
-}
-
-// Optional: Add a print-friendly version button
-function addPrintButton() {
-    const downloadSection = document.querySelector('.download-section');
-    if (downloadSection && !document.querySelector('#print-btn')) {
-        const printBtn = document.createElement('button');
-        printBtn.id = 'print-btn';
-        printBtn.className = 'print-btn';
-        printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
-        printBtn.style.marginTop = '10px';
-        printBtn.style.width = '100%';
-        printBtn.style.padding = '0.75rem 1.5rem';
-        printBtn.style.background = '#666';
-        printBtn.style.color = 'white';
-        printBtn.style.border = 'none';
-        printBtn.style.borderRadius = '6px';
-        printBtn.style.cursor = 'pointer';
-        printBtn.style.fontWeight = '500';
-        printBtn.style.transition = 'all 0.2s ease';
-        
-        printBtn.addEventListener('mouseenter', () => {
-            printBtn.style.background = '#555';
-            printBtn.style.transform = 'translateY(-2px)';
-        });
-        
-        printBtn.addEventListener('mouseleave', () => {
-            printBtn.style.background = '#666';
-            printBtn.style.transform = 'translateY(0)';
-        });
-        
-        printBtn.addEventListener('click', () => {
-            window.print();
-        });
-        
-        downloadSection.appendChild(printBtn);
-    }
-}
-
-// Add print button when resume is loaded
-setTimeout(addPrintButton, 2000);
+// Debug: Check if libraries are loaded
+window.addEventListener('load', function() {
+    console.log('Window loaded');
+    console.log('html2canvas available:', typeof html2canvas !== 'undefined');
+    console.log('jsPDF available:', typeof window.jspdf !== 'undefined');
+});
