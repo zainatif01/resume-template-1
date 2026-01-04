@@ -142,7 +142,7 @@ function renderEducation(education) {
     `).join('');
 }
 
-// PDF Download Functionality with Selectable Text
+// PDF Download Functionality with Selectable Text and Graphics
 function setupPDFDownload() {
     const downloadBtn = document.getElementById('download-pdf-btn');
     
@@ -169,13 +169,25 @@ function setupPDFDownload() {
             const margin = 20;
             let yPos = margin;
             
-            // Set font
+            // Define colors
+            const colors = {
+                primary: [44, 62, 80],    // #2c3e50
+                secondary: [52, 152, 219], // #3498db
+                accent: [41, 128, 185],   // #2980b9
+                background: [248, 249, 250], // #f8f9fa
+                border: [225, 229, 233],  // #e1e5e9
+                white: [255, 255, 255],
+                gray: [100, 100, 100]
+            };
+            
+            // Set default font
             pdf.setFont('helvetica');
             
             // Helper function to add text with line wrapping
-            const addText = (text, x, y, maxWidth, fontSize = 11, fontWeight = 'normal') => {
+            const addText = (text, x, y, maxWidth, fontSize = 11, fontWeight = 'normal', color = colors.primary) => {
                 pdf.setFontSize(fontSize);
                 pdf.setFont(undefined, fontWeight);
+                pdf.setTextColor(...color);
                 
                 const lines = pdf.splitTextToSize(text, maxWidth);
                 pdf.text(lines, x, y);
@@ -192,52 +204,111 @@ function setupPDFDownload() {
                 return false;
             };
             
-            // ===== HEADER SECTION =====
+            // Helper function to draw rounded rectangle
+            const drawRoundedRect = (x, y, width, height, radius, fillColor = null, strokeColor = null) => {
+                if (fillColor) {
+                    pdf.setFillColor(...fillColor);
+                }
+                if (strokeColor) {
+                    pdf.setDrawColor(...strokeColor);
+                }
+                
+                // Simplified rounded rect (jsPDF doesn't have native rounded rect)
+                pdf.rect(x, y, width, height, fillColor ? 'F' : 'S');
+            };
+            
+            // ===== BLUE HEADER SECTION =====
+            // Draw blue gradient header background
+            const headerHeight = 50;
+            pdf.setFillColor(...colors.secondary);
+            pdf.rect(0, 0, pageWidth, headerHeight, 'F');
+            
+            // Add a subtle gradient effect (lighter top)
+            pdf.setFillColor(66, 169, 234); // Lighter blue
+            pdf.rect(0, 0, pageWidth, 15, 'F');
+            
+            // Header content
             const name = document.getElementById('resume-name').textContent;
             const title = document.getElementById('resume-title').textContent;
             
-            // Name
-            yPos += addText(name, margin, yPos, pageWidth - 2*margin, 24, 'bold');
-            yPos += 5;
+            // Name (in white)
+            pdf.setFontSize(24);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.white);
+            pdf.text(name, margin, 30);
             
-            // Title
-            yPos += addText(title, margin, yPos, pageWidth - 2*margin, 14);
-            yPos += 10;
+            // Title (in light white)
+            pdf.setFontSize(14);
+            pdf.setTextColor(255, 255, 255, 0.9);
+            pdf.text(title, margin, 40);
             
-            // Contact Info
+            // Contact Info in header (right aligned)
             const contactInfo = document.getElementById('contact-info');
-            const contactText = Array.from(contactInfo.querySelectorAll('p'))
-                .map(p => p.textContent.trim())
-                .join(' | ');
+            const contactItems = Array.from(contactInfo.querySelectorAll('p'))
+                .map(p => p.textContent.trim());
             
-            yPos += addText(contactText, margin, yPos, pageWidth - 2*margin, 10);
-            yPos += 15;
+            let contactY = 30;
+            contactItems.forEach(item => {
+                const textWidth = pdf.getTextWidth(item);
+                pdf.text(item, pageWidth - margin - textWidth, contactY);
+                contactY += 5;
+            });
+            
+            yPos = headerHeight + 10; // Start content below header
+            
+            // ===== MAIN CONTENT BACKGROUND =====
+            pdf.setFillColor(...colors.white);
+            pdf.rect(0, headerHeight, pageWidth, pageHeight - headerHeight, 'F');
             
             // ===== SUMMARY SECTION =====
-            checkNewPage(20);
+            checkNewPage(30);
+            
+            // Section title with blue underline
+            pdf.setFontSize(16);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('PROFESSIONAL SUMMARY', margin, yPos);
+            
+            // Blue underline
+            pdf.setDrawColor(...colors.secondary);
+            pdf.setLineWidth(1);
+            pdf.line(margin, yPos + 2, margin + 60, yPos + 2);
+            
+            yPos += 10;
+            
+            // Summary text in a light background box
             const summary = document.getElementById('summary-text').textContent;
-            yPos += addText('PROFESSIONAL SUMMARY', margin, yPos, pageWidth - 2*margin, 14, 'bold');
-            yPos += 5;
+            const summaryLines = pdf.splitTextToSize(summary, pageWidth - 2*margin);
+            const summaryHeight = summaryLines.length * 4.5;
             
-            pdf.setDrawColor(52, 152, 219);
-            pdf.setLineWidth(0.5);
-            pdf.line(margin, yPos, pageWidth - margin, yPos);
-            yPos += 8;
+            // Light background for summary
+            pdf.setFillColor(...colors.background);
+            pdf.roundedRect(margin, yPos, pageWidth - 2*margin, summaryHeight + 10, 3, 'F');
             
-            yPos += addText(summary, margin, yPos, pageWidth - 2*margin, 11);
-            yPos += 15;
+            // Summary text
+            pdf.setFontSize(11);
+            pdf.setFont(undefined, 'normal');
+            pdf.setTextColor(...colors.primary);
+            pdf.text(summaryLines, margin + 5, yPos + 7);
+            
+            yPos += summaryHeight + 15;
             
             // ===== WORK EXPERIENCE =====
-            checkNewPage(20);
-            yPos += addText('WORK EXPERIENCE', margin, yPos, pageWidth - 2*margin, 14, 'bold');
-            yPos += 5;
+            checkNewPage(40);
             
-            pdf.line(margin, yPos, pageWidth - margin, yPos);
+            // Section title
+            pdf.setFontSize(16);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('WORK EXPERIENCE', margin, yPos);
+            pdf.setDrawColor(...colors.secondary);
+            pdf.line(margin, yPos + 2, margin + 80, yPos + 2);
+            
             yPos += 10;
             
             const experienceItems = document.querySelectorAll('.experience-item');
             experienceItems.forEach((item, index) => {
-                checkNewPage(30);
+                checkNewPage(50);
                 
                 const company = item.querySelector('h3').textContent;
                 const position = item.querySelector('.job-position').textContent;
@@ -246,31 +317,46 @@ function setupPDFDownload() {
                     .map(li => '• ' + li.textContent.trim())
                     .join('\n');
                 
+                // Experience item background with left border
+                pdf.setFillColor(...colors.background);
+                pdf.rect(margin, yPos, pageWidth - 2*margin, 40, 'F');
+                
+                // Left blue border
+                pdf.setFillColor(...colors.secondary);
+                pdf.rect(margin, yPos, 4, 40, 'F');
+                
                 // Company and Date
                 pdf.setFont(undefined, 'bold');
                 pdf.setFontSize(12);
-                pdf.text(company, margin, yPos);
+                pdf.setTextColor(...colors.primary);
+                pdf.text(company, margin + 10, yPos + 8);
                 
+                // Date badge
                 const dateWidth = pdf.getTextWidth(date);
-                pdf.text(date, pageWidth - margin - dateWidth, yPos);
-                yPos += 7;
+                pdf.setFillColor(...colors.secondary);
+                pdf.roundedRect(pageWidth - margin - dateWidth - 10, yPos + 2, dateWidth + 8, 10, 5, 'F');
+                pdf.setTextColor(...colors.white);
+                pdf.setFontSize(9);
+                pdf.text(date, pageWidth - margin - dateWidth - 6, yPos + 8.5);
                 
                 // Position
                 pdf.setFont(undefined, 'normal');
                 pdf.setFontSize(11);
-                yPos += addText(position, margin, yPos, pageWidth - 2*margin, 11);
-                yPos += 5;
+                pdf.setTextColor(colors.gray);
+                pdf.text(position, margin + 10, yPos + 16);
                 
                 // Responsibilities
                 pdf.setFontSize(10);
-                const respLines = pdf.splitTextToSize(responsibilities, pageWidth - 2*margin - 10);
-                pdf.text(respLines, margin + 5, yPos);
-                yPos += respLines.length * 4;
-                yPos += 10;
+                pdf.setTextColor(...colors.primary);
+                const respLines = pdf.splitTextToSize(responsibilities, pageWidth - 2*margin - 20);
+                pdf.text(respLines, margin + 15, yPos + 24);
                 
-                // Add separator between jobs (except last)
+                const itemHeight = 20 + respLines.length * 4;
+                yPos += itemHeight + 10;
+                
+                // Add separator between jobs
                 if (index < experienceItems.length - 1) {
-                    pdf.setDrawColor(225, 229, 233);
+                    pdf.setDrawColor(...colors.border);
                     pdf.setLineWidth(0.3);
                     pdf.line(margin, yPos - 5, pageWidth - margin, yPos - 5);
                     yPos += 5;
@@ -278,16 +364,19 @@ function setupPDFDownload() {
             });
             
             // ===== SKILLS =====
-            checkNewPage(30);
-            yPos += addText('SKILLS', margin, yPos, pageWidth - 2*margin, 14, 'bold');
-            yPos += 5;
+            checkNewPage(40);
             
-            pdf.setDrawColor(52, 152, 219);
-            pdf.setLineWidth(0.5);
-            pdf.line(margin, yPos, pageWidth - margin, yPos);
+            // Section title
+            pdf.setFontSize(16);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('SKILLS', margin, yPos);
+            pdf.setDrawColor(...colors.secondary);
+            pdf.line(margin, yPos + 2, margin + 30, yPos + 2);
+            
             yPos += 10;
             
-            // Skills in two columns
+            // Skills in two columns with tag styling
             const leftColX = margin;
             const rightColX = pageWidth / 2;
             const colWidth = (pageWidth - 2*margin) / 2 - 10;
@@ -296,106 +385,201 @@ function setupPDFDownload() {
             skillCategories.forEach((category, catIndex) => {
                 const catTitle = category.querySelector('h4').textContent;
                 const skills = Array.from(category.querySelectorAll('.skill-tag'))
-                    .map(tag => tag.textContent.trim())
-                    .join(', ');
+                    .map(tag => tag.textContent.trim());
                 
                 const xPos = catIndex % 2 === 0 ? leftColX : rightColX;
-                const currentY = catIndex < 2 ? yPos : yPos + 25;
+                let skillY = catIndex < 2 ? yPos : yPos + 30;
                 
                 if (catIndex === 2) {
-                    yPos += 25; // Move to next row for second column
+                    yPos += 30; // Move to next row for second column
+                    skillY = yPos;
                 }
                 
+                // Category title
                 pdf.setFont(undefined, 'bold');
-                pdf.setFontSize(11);
-                pdf.text(catTitle, xPos, currentY);
+                pdf.setFontSize(12);
+                pdf.setTextColor(...colors.primary);
+                pdf.text(catTitle, xPos, skillY);
                 
-                pdf.setFont(undefined, 'normal');
-                pdf.setFontSize(10);
-                const skillLines = pdf.splitTextToSize(skills, colWidth);
-                pdf.text(skillLines, xPos, currentY + 6);
+                // Skills as tags
+                skillY += 8;
+                let tagX = xPos;
+                let tagY = skillY;
+                
+                skills.forEach((skill, skillIndex) => {
+                    const tagWidth = pdf.getTextWidth(skill) + 8;
+                    
+                    // Check if tag fits on current line
+                    if (tagX + tagWidth > xPos + colWidth) {
+                        tagX = xPos;
+                        tagY += 8;
+                    }
+                    
+                    // Draw tag background
+                    pdf.setFillColor(...colors.background);
+                    pdf.setDrawColor(...colors.border);
+                    pdf.setLineWidth(0.5);
+                    pdf.roundedRect(tagX, tagY, tagWidth, 6, 3, 'F');
+                    pdf.roundedRect(tagX, tagY, tagWidth, 6, 3, 'S');
+                    
+                    // Tag text
+                    pdf.setFontSize(9);
+                    pdf.setFont(undefined, 'normal');
+                    pdf.setTextColor(...colors.primary);
+                    pdf.text(skill, tagX + 4, tagY + 4.5);
+                    
+                    tagX += tagWidth + 4;
+                });
                 
                 if (catIndex === 1 || catIndex === skillCategories.length - 1) {
-                    yPos += Math.max(6 + skillLines.length * 4, 20);
+                    yPos = Math.max(yPos, tagY + 15);
                 }
             });
             
-            // ===== LANGUAGES & EDUCATION (Side by side on last page) =====
+            // ===== SIDEBAR SECTION (Right Column) =====
             pdf.addPage();
             yPos = margin;
             
-            // Languages in left column
-            yPos += addText('LANGUAGES', margin, yPos, pageWidth/2 - margin - 5, 14, 'bold');
-            yPos += 5;
+            // Create sidebar background
+            pdf.setFillColor(...colors.background);
+            pdf.rect(pageWidth/2 + 5, margin - 10, pageWidth/2 - margin - 5, pageHeight - 2*margin + 10, 'F');
             
-            pdf.setDrawColor(52, 152, 219);
-            pdf.line(margin, yPos, pageWidth/2 - 5, yPos);
-            yPos += 10;
+            // ===== LANGUAGES =====
+            // Section title in sidebar
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('LANGUAGES', pageWidth/2 + 10, yPos);
+            
+            pdf.setDrawColor(...colors.secondary);
+            pdf.setLineWidth(0.5);
+            pdf.line(pageWidth/2 + 10, yPos + 2, pageWidth/2 + 70, yPos + 2);
+            
+            yPos += 8;
             
             const languages = document.querySelectorAll('.language-item');
-            languages.forEach(lang => {
+            languages.forEach((lang, index) => {
                 const name = lang.querySelector('.language-name').textContent;
                 const level = lang.querySelector('.language-level').textContent;
                 
+                // Language item with border
+                if (index < languages.length - 1) {
+                    pdf.setDrawColor(...colors.border);
+                    pdf.setLineWidth(0.3);
+                    pdf.line(pageWidth/2 + 10, yPos + 5, pageWidth - margin - 10, yPos + 5);
+                }
+                
                 pdf.setFont(undefined, 'bold');
                 pdf.setFontSize(11);
-                pdf.text(name, margin, yPos);
+                pdf.setTextColor(...colors.primary);
+                pdf.text(name, pageWidth/2 + 10, yPos + 3);
                 
                 pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(...colors.secondary);
                 const levelWidth = pdf.getTextWidth(level);
-                pdf.text(level, pageWidth/2 - 5 - levelWidth, yPos);
-                yPos += 7;
+                pdf.text(level, pageWidth - margin - 10 - levelWidth, yPos + 3);
+                
+                yPos += 8;
             });
             
-            // Education in right column
-            let yPosRight = margin;
-            yPosRight += addText('EDUCATION', pageWidth/2 + 5, yPosRight, pageWidth/2 - margin - 5, 14, 'bold');
-            yPosRight += 5;
+            yPos += 10;
             
-            pdf.setDrawColor(52, 152, 219);
-            pdf.line(pageWidth/2 + 5, yPosRight, pageWidth - margin, yPosRight);
-            yPosRight += 10;
+            // ===== EDUCATION =====
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('EDUCATION', pageWidth/2 + 10, yPos);
+            
+            pdf.setDrawColor(...colors.secondary);
+            pdf.line(pageWidth/2 + 10, yPos + 2, pageWidth/2 + 60, yPos + 2);
+            
+            yPos += 8;
             
             const educationItems = document.querySelectorAll('.education-item');
-            educationItems.forEach(edu => {
+            educationItems.forEach((edu, index) => {
                 const degree = edu.querySelector('h4').textContent;
                 const institution = edu.querySelector('.education-detail').textContent;
                 const date = edu.querySelector('.education-date').textContent;
                 
+                // Education item with border
+                if (index < educationItems.length - 1) {
+                    pdf.setDrawColor(...colors.border);
+                    pdf.setLineWidth(0.3);
+                    pdf.line(pageWidth/2 + 10, yPos + 25, pageWidth - margin - 10, yPos + 25);
+                }
+                
+                // Degree
                 pdf.setFont(undefined, 'bold');
                 pdf.setFontSize(11);
-                const degreeLines = pdf.splitTextToSize(degree, pageWidth/2 - margin - 10);
-                pdf.text(degreeLines, pageWidth/2 + 5, yPosRight);
-                yPosRight += degreeLines.length * 4 + 2;
+                pdf.setTextColor(...colors.primary);
+                const degreeLines = pdf.splitTextToSize(degree, pageWidth/2 - margin - 15);
+                pdf.text(degreeLines, pageWidth/2 + 10, yPos + 3);
                 
+                // Institution
                 pdf.setFont(undefined, 'normal');
                 pdf.setFontSize(10);
-                yPosRight += addText(institution, pageWidth/2 + 5, yPosRight, pageWidth/2 - margin - 10, 10);
-                yPosRight += addText(date, pageWidth/2 + 5, yPosRight, pageWidth/2 - margin - 10, 10);
-                yPosRight += 10;
+                pdf.setTextColor(colors.gray);
+                pdf.text(institution, pageWidth/2 + 10, yPos + 3 + degreeLines.length * 4 + 2);
+                
+                // Date
+                pdf.setTextColor(...colors.secondary);
+                pdf.text(date, pageWidth/2 + 10, yPos + 3 + degreeLines.length * 4 + 8);
+                
+                yPos += 20 + degreeLines.length * 4;
             });
             
             // ===== PERSONAL DETAILS =====
-            yPos = Math.max(yPos, yPosRight) + 10;
-            checkNewPage(20);
-            
-            yPos += addText('PERSONAL DETAILS', margin, yPos, pageWidth - 2*margin, 14, 'bold');
-            yPos += 5;
-            
-            pdf.setDrawColor(52, 152, 219);
-            pdf.line(margin, yPos, pageWidth - margin, yPos);
             yPos += 10;
+            
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'bold');
+            pdf.setTextColor(...colors.primary);
+            pdf.text('PERSONAL DETAILS', pageWidth/2 + 10, yPos);
+            
+            pdf.setDrawColor(...colors.secondary);
+            pdf.line(pageWidth/2 + 10, yPos + 2, pageWidth/2 + 90, yPos + 2);
+            
+            yPos += 8;
             
             const personalDetails = document.getElementById('personal-details');
             const details = Array.from(personalDetails.querySelectorAll('p'))
                 .map(p => p.textContent.trim());
             
             details.forEach(detail => {
-                yPos += addText(detail, margin, yPos, pageWidth - 2*margin, 11);
-                yPos += 6;
+                pdf.setFontSize(11);
+                pdf.setFont(undefined, 'normal');
+                pdf.setTextColor(...colors.primary);
+                
+                // Split label and value
+                const parts = detail.split(':');
+                if (parts.length === 2) {
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(parts[0] + ':', pageWidth/2 + 10, yPos);
+                    
+                    const labelWidth = pdf.getTextWidth(parts[0] + ':');
+                    pdf.setFont(undefined, 'normal');
+                    pdf.text(parts[1], pageWidth/2 + 10 + labelWidth + 2, yPos);
+                } else {
+                    pdf.text(detail, pageWidth/2 + 10, yPos);
+                }
+                
+                yPos += 7;
             });
             
+            // ===== MAIN COLUMN CONTINUED =====
+            // Reset to left column for any additional content
+            pdf.addPage();
+            yPos = margin;
+            
             // ===== FOOTER =====
+            // Draw footer background
+            pdf.setFillColor(...colors.background);
+            pdf.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+            pdf.setDrawColor(...colors.border);
+            pdf.setLineWidth(0.5);
+            pdf.line(0, pageHeight - 20, pageWidth, pageHeight - 20);
+            
+            // Footer text
             const footerText = document.getElementById('footer-text').textContent;
             const date = new Date().toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -404,17 +588,17 @@ function setupPDFDownload() {
             });
             
             pdf.setFontSize(9);
-            pdf.setTextColor(100, 100, 100);
-            pdf.text(`Generated on ${date}`, pageWidth/2, pageHeight - 10, { align: 'center' });
-            pdf.text(footerText, pageWidth/2, pageHeight - 5, { align: 'center' });
+            pdf.setTextColor(...colors.gray);
+            pdf.text(`Generated on ${date}`, pageWidth/2, pageHeight - 15, { align: 'center' });
+            pdf.text(footerText, pageWidth/2, pageHeight - 8, { align: 'center' });
             
             // Save PDF
             const cleanName = name.replace(/\s+/g, '_').replace(/[^\w\s-]/g, '');
-            const filename = `${cleanName}_Resume_Selectable.pdf`;
+            const filename = `${cleanName}_Professional_Resume.pdf`;
             
             pdf.save(filename);
             
-            console.log('PDF with selectable text generated successfully');
+            console.log('PDF with graphics and selectable text generated successfully');
             
         } catch (error) {
             console.error('Error generating PDF:', error);
