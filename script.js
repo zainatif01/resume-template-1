@@ -38,9 +38,6 @@ function renderResume(data) {
     // Personal Information
     document.getElementById('resume-name').textContent = data.personal.name;
     document.getElementById('resume-title').textContent = data.personal.title;
-
-    // Update page title
-    document.getElementById('page-title').textContent = `${fullName} - Resume`;
     
     // Contact Info
     const contactInfo = document.getElementById('contact-info');
