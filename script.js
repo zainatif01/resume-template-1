@@ -40,7 +40,7 @@ function renderResume(data) {
     document.getElementById('resume-name').textContent = data.personal.name;
     document.getElementById('resume-title').textContent = data.personal.title;
     // Page title
-    document.getElementById('page-title').textContent = `${fullName} - Resume`;
+    document.title = `${fullName} - Resume`;
     
     // Contact Info
     const contactInfo = document.getElementById('contact-info');
