@@ -1,11 +1,4 @@
-// ---------------- DATE FORMATTER ----------------
-function formatDate(value) {
-    if (!value) return '';
-    const d = new Date(value);
-    return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-}
-
-// ---------------- LOAD JSON ----------------
+// Function to load and parse the JSON data
 async function loadResumeData() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const resumeContainer = document.getElementById('resume-content');
@@ -30,11 +23,71 @@ async function loadResumeData() {
     }
 }
 
-// ---------------- RENDER WEB ----------------
+// ---------------- RENDER FUNCTIONS ----------------
 function renderResume(data) {
     document.getElementById('resume-name').textContent = data.personal.name;
     document.getElementById('resume-title').textContent = data.personal.title;
+    document.title = `${data.personal.name} - Resume`;
+
+    document.getElementById('contact-info').innerHTML = `
+        <p>${data.personal.email}</p>
+        <p>${data.personal.phone}</p>
+        <p>${data.personal.location}</p>
+    `;
+
     document.getElementById('summary-text').textContent = data.summary;
+
+    renderWorkExperience(data.workExperience);
+    renderSkills(data.skills);
+    renderLanguages(data.languages);
+    renderEducation(data.education);
+
+    document.getElementById('footer-text').textContent =
+        data.footer?.copyright || '';
+}
+
+function renderWorkExperience(experience) {
+    const container = document.getElementById('work-experience');
+    container.innerHTML = '';
+
+    experience.forEach(job => {
+        const el = document.createElement('div');
+        el.className = 'experience-item';
+        el.innerHTML = `
+            <strong>${job.company}</strong>
+            <span>${job.startDate} - ${job.endDate}</span>
+            <p>${job.position} | ${job.location}</p>
+            <ul>
+                ${job.responsibilities.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+        `;
+        container.appendChild(el);
+    });
+}
+
+function renderSkills(skills) {
+    document.getElementById('skills-section').innerHTML = `
+        <p>${[...skills.technical, ...skills.professional].join(', ')}</p>
+    `;
+}
+
+function renderLanguages(languages) {
+    document.getElementById('languages-list').innerHTML =
+        languages.map(l => `<p>${l.name} – ${l.level}</p>`).join('');
+}
+
+function renderEducation(education) {
+    document.getElementById('education-list').innerHTML =
+        education.map(e => `
+            <p><strong>${e.degree}</strong> — ${e.institution} (${e.completionDate})</p>
+        `).join('');
+}
+
+// ---------------- DATE FORMATTER ----------------
+function formatDate(value) {
+    if (!value) return '';
+    const d = new Date(value);
+    return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
 }
 
 // ---------------- PDF ----------------
