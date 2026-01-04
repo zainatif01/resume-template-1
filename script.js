@@ -165,7 +165,8 @@ function setupPDFDownload() {
         // -------- SUMMARY --------
         sectionTitle(pdf, 'PROFESSIONAL SUMMARY', left, y);
         y += 8;
-
+        
+        pdf.setFont('times', 'normal');
         y = addParagraph(pdf, data.summary, left, y, 180, 4);
         y += 10;
 
@@ -196,11 +197,15 @@ function setupPDFDownload() {
 
             // Bullets
             job.responsibilities.forEach(r => {
-                y = checkPageBreak(pdf, y);
-                pdf.text('•', left + 2, y);
-                pdf.text(r, left + 6, y, { maxWidth: 170 });
-                y += 4;
-            });
+            y = checkPageBreak(pdf, y);
+        
+            const lines = pdf.splitTextToSize(r, 170);
+        
+            pdf.text('•', left + 2, y);
+            pdf.text(lines, left + 6, y);
+        
+            y += lines.length * 4;
+        });
 
             y += 8;
         });
@@ -229,29 +234,27 @@ function setupPDFDownload() {
 
         // -------- OTHERS --------
         sectionTitle(pdf, 'OTHERS', left, y);
-        y += 10;
-
-        pdf.setFont('times', 'bold');
-        pdf.text('• Skills:', left, y);
-        pdf.setFont('times', 'normal');
-        pdf.text(
-            [...data.skills.technical, ...data.skills.professional].join(', '),
-            left + 25,
-            y,
-            { maxWidth: 155 }
-        );
-        y += 6;
-
-        pdf.setFont('times', 'bold');
-        pdf.text('• Languages:', left, y);
-        pdf.setFont('times', 'normal');
-        pdf.text(
-            data.languages.map(l => `${l.name} (${l.level})`).join(', '),
-            left + 30,
-            y,
-            { maxWidth: 150 }
-        );
-
+            y += 10;
+            
+            y = addBullet(
+                pdf,
+                'Skills:',
+                [...data.skills.technical, ...data.skills.professional].join(', '),
+                left,
+                y,
+                170
+            );
+            y += 2;
+            
+            y = addBullet(
+                pdf,
+                'Languages:',
+                data.languages.map(l => `${l.name} (${l.level})`).join(', '),
+                left,
+                y,
+                170
+            );
+            
         pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
 }
@@ -273,6 +276,29 @@ function addParagraph(pdf, text, x, y, width, lh) {
     const lines = pdf.splitTextToSize(text, width);
     pdf.text(lines, x, y);
     return y + lines.length * lh;
+}
+
+function addBullet(pdf, label, text, x, y, width, lh = 4) {
+    const bulletX = x + 2;
+    const textX = x + 6;
+
+    pdf.text('•', bulletX, y);
+
+    if (label) {
+        pdf.setFont('times', 'bold');
+        pdf.text(label, textX, y);
+        pdf.setFont('times', 'normal');
+
+        const labelWidth = pdf.getTextWidth(label + ' ');
+        const lines = pdf.splitTextToSize(text, width - labelWidth);
+        pdf.text(lines, textX + labelWidth, y);
+
+        return y + lines.length * lh;
+    } else {
+        const lines = pdf.splitTextToSize(text, width);
+        pdf.text(lines, textX, y);
+        return y + lines.length * lh;
+    }
 }
 
 function checkPageBreak(pdf, y) {
