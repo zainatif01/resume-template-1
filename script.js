@@ -51,8 +51,7 @@ function renderResume(data) {
    
     document.getElementById('summary-text').textContent = data.summary;
     renderWorkExperience(data.workExperience);
-    renderSkills(data.skills);
-    renderLanguages(data.languages);
+    renderOthers(data.others); // Updated to render others section
     renderEducation(data.education);
    
     // Personal Details
@@ -87,35 +86,39 @@ function renderWorkExperience(experience) {
     });
 }
 
-// Function to render skills
-function renderSkills(skills) {
-    const container = document.getElementById('skills-section');
+// Function to render others section (combined skills and languages)
+function renderOthers(others) {
+    const container = document.getElementById('others-content');
     container.innerHTML = `
-        <div class="skill-category">
-            <h4>Technical Skills</h4>
-            <div class="skill-list">
-                ${skills.technical.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+        <div class="others-section">
+            <h4>Skills</h4>
+            <div class="skill-category">
+                <h5>Technical Skills</h5>
+                <div class="skill-list">
+                    ${others.skills.technical.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                </div>
+            </div>
+            <div class="skill-category">
+                <h5>Professional Skills</h5>
+                <div class="skill-list">
+                    ${others.skills.professional.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                </div>
             </div>
         </div>
-        <div class="skill-category">
-            <h4>Professional Skills</h4>
-            <div class="skill-list">
-                ${skills.professional.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+        <div class="others-section">
+            <h4>Languages</h4>
+            <div class="languages-container">
+                ${others.languages.map(lang => `
+                    <div class="language-item">
+                        <span class="language-name">${lang.name}</span>
+                        <span class="language-level">${lang.level}</span>
+                    </div>
+                `).join('')}
             </div>
         </div>
     `;
 }
 
-// Function to render languages
-function renderLanguages(languages) {
-    const container = document.getElementById('languages-list');
-    container.innerHTML = languages.map(lang => `
-        <div class="language-item">
-            <span class="language-name">${lang.name}</span>
-            <span class="language-level">${lang.level}</span>
-        </div>
-    `).join('');
-}
 // Function to render education
 function renderEducation(education) {
     const container = document.getElementById('education-list');
@@ -273,27 +276,82 @@ function setupPDFDownload() {
         pdf.setFont('times', 'normal');
         pdf.setFontSize(11);
         
-        // Skills bullet
-        const skillsText = [...data.skills.technical, ...data.skills.professional].join(', ');
-        const skillsLines = pdf.splitTextToSize(skillsText, 170 - pdf.getTextWidth('Skills: '));
+        // Skills section
+        y = checkPageBreak(pdf, y, LINE_HEIGHT * 8);
         
-        pdf.text('•', left + 2, y);
+        // Skills header
         pdf.setFont('times', 'bold');
-        pdf.text('Skills:', left + 6, y);
-        pdf.setFont('times', 'normal');
-        pdf.text(skillsLines, left + 6 + pdf.getTextWidth('Skills: '), y);
-        y += Math.max(skillsLines.length, 1) * LINE_HEIGHT;
+        pdf.text('Skills', left + 2, y);
+        y += LINE_HEIGHT;
         
-        // Languages bullet
-        y += 2; // Small spacing between bullets
-        const languagesText = data.languages.map(l => `${l.name} (${l.level})`).join(', ');
+        // Technical skills
+        pdf.text('Technical:', left + 6, y);
+        const techSkillsText = data.others.skills.technical.join(', ');
+        const techSkillsLines = pdf.splitTextToSize(techSkillsText, 165 - pdf.getTextWidth('Technical: '));
+        
+        if (techSkillsLines.length === 1) {
+            pdf.setFont('times', 'normal');
+            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
+            y += LINE_HEIGHT;
+        } else {
+            // Handle multi-line technical skills
+            pdf.setFont('times', 'normal');
+            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
+            y += LINE_HEIGHT;
+            
+            for (let i = 1; i < techSkillsLines.length; i++) {
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
+                pdf.text(techSkillsLines[i], left + 6, y);
+                y += LINE_HEIGHT;
+            }
+        }
+        
+        // Professional skills
+        pdf.setFont('times', 'bold');
+        pdf.text('Professional:', left + 6, y);
+        const profSkillsText = data.others.skills.professional.join(', ');
+        const profSkillsLines = pdf.splitTextToSize(profSkillsText, 165 - pdf.getTextWidth('Professional: '));
+        
+        if (profSkillsLines.length === 1) {
+            pdf.setFont('times', 'normal');
+            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
+            y += LINE_HEIGHT;
+        } else {
+            pdf.setFont('times', 'normal');
+            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
+            y += LINE_HEIGHT;
+            
+            for (let i = 1; i < profSkillsLines.length; i++) {
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
+                pdf.text(profSkillsLines[i], left + 6, y);
+                y += LINE_HEIGHT;
+            }
+        }
+        
+        y += 2; // Add spacing before Languages
+        
+        // Languages section
+        y = checkPageBreak(pdf, y, LINE_HEIGHT * 4);
+        pdf.setFont('times', 'bold');
+        pdf.text('Languages:', left + 2, y);
+        y += LINE_HEIGHT;
+        
+        const languagesText = data.others.languages.map(l => `${l.name} (${l.level})`).join(', ');
         const languagesLines = pdf.splitTextToSize(languagesText, 170 - pdf.getTextWidth('Languages: '));
         
-        pdf.text('•', left + 2, y);
-        pdf.setFont('times', 'bold');
-        pdf.text('Languages:', left + 6, y);
         pdf.setFont('times', 'normal');
-        pdf.text(languagesLines, left + 6 + pdf.getTextWidth('Languages: '), y);
+        if (languagesLines.length === 1) {
+            pdf.text(languagesLines[0], left + 6, y);
+        } else {
+            pdf.text(languagesLines[0], left + 6, y);
+            y += LINE_HEIGHT;
+            
+            for (let i = 1; i < languagesLines.length; i++) {
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
+                pdf.text(languagesLines[i], left + 6, y);
+                y += LINE_HEIGHT;
+            }
+        }
             
         pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
