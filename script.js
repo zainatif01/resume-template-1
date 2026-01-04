@@ -1,4 +1,4 @@
-    // Function to load and parse the JSON data
+// Function to load and parse the JSON data
 async function loadResumeData() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const resumeContainer = document.getElementById('resume-content');
