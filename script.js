@@ -135,246 +135,245 @@ function renderEducation(education) {
 function setupPDFDownload() {
     document.getElementById('download-pdf-btn')
         .addEventListener('click', async () => {
+        try {
+            const res = await fetch(`resume-data.json?version=${Date.now()}`);
+            const data = await res.json();
 
-        const res = await fetch(`resume-data.json?version=${Date.now()}`);
-        const data = await res.json();
+            // Check if jsPDF is loaded properly
+            if (typeof window.jspdf === 'undefined') {
+                throw new Error('jsPDF library not loaded. Please check the script URL.');
+            }
 
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const left = 15;
-        const right = 195;
-        let y = 20;
-        
-        // Consistent spacing constants
-        const LINE_HEIGHT = 5; // Consistent line spacing for all content
-        const SECTION_SPACING = 10; // Space after section titles
-        const SECTION_GAP = 8; // Consistent gap between sections (after content of previous section)
-        const ITEM_SPACING = 4; // Space between items within a section
+            const left = 15;
+            const right = 195;
+            let y = 20;
+            
+            // Consistent spacing constants
+            const LINE_HEIGHT = 5;
+            const SECTION_SPACING = 10;
+            const SECTION_GAP = 8;
+            const ITEM_SPACING = 4;
 
-        // -------- HEADER --------
-        pdf.setFont('times', 'bold');
-        pdf.setFontSize(20);
-        pdf.text(data.personal.name, left, y);
-        y += 6;
+            // -------- HEADER --------
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(20);
+            pdf.text(data.personal.name, left, y);
+            y += 6;
 
-        pdf.setFont('times', 'normal');
-        pdf.setFontSize(10);
-        pdf.text(
-            `${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`,
-            left,
-            y
-        );
-        y += SECTION_GAP;
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            const contactText = `${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`;
+            pdf.text(contactText, left, y);
+            y += SECTION_GAP;
 
-        // -------- SUMMARY --------
-        sectionTitle(pdf, 'SUMMARY', left, y);
-        y += SECTION_SPACING;
-        
-        pdf.setFont('times', 'normal');
-        pdf.setFontSize(11);
-        
-        const summaryLines = pdf.splitTextToSize(data.summary, 180);
-        summaryLines.forEach((line, index) => {
-            pdf.text(line, left, y);
-            y += LINE_HEIGHT;
-        });
-        y += SECTION_GAP; // Consistent gap after SUMMARY content
-
-        // -------- EXPERIENCE --------
-        sectionTitle(pdf, 'WORK EXPERIENCE', left, y);
-        y += SECTION_SPACING;
-
-        data.workExperience.forEach(job => {
-            y = checkPageBreak(pdf, y, LINE_HEIGHT * 10);
-
-            // Line 1 - Company and Date
-            pdf.setFont('times', 'bold');
+            // -------- SUMMARY --------
+            drawSectionTitle(pdf, 'SUMMARY', left, y);
+            y += SECTION_SPACING;
+            
+            pdf.setFont('helvetica', 'normal');
             pdf.setFontSize(11);
-            pdf.text(job.company, left, y);
-            pdf.text(
-                `${job.startDate} – ${job.endDate}`,
-                right,
-                y,
-                { align: 'right' }
-            );
-            y += LINE_HEIGHT;
+            
+            // Clean summary text and split into lines
+            const cleanSummary = data.summary.replace(/[^\x00-\x7F]/g, '');
+            const summaryLines = pdf.splitTextToSize(cleanSummary, 180);
+            
+            summaryLines.forEach((line, index) => {
+                if (index > 0 && y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                }
+                pdf.text(line, left, y);
+                y += LINE_HEIGHT;
+            });
+            
+            y += SECTION_GAP;
 
-            // Line 2 - Position and Location
-            pdf.setFont('times', 'normal');
-            pdf.text(job.position, left, y);
-            pdf.text(job.location, right, y, { align: 'right' });
-            y += LINE_HEIGHT;
+            // -------- WORK EXPERIENCE --------
+            drawSectionTitle(pdf, 'WORK EXPERIENCE', left, y);
+            y += SECTION_SPACING;
 
-            // Bullets
-            job.responsibilities.forEach(r => {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT * 3);
-                
-                const lines = pdf.splitTextToSize(r, 170);
-                
-                // Draw bullet point
-                pdf.text('•', left + 2, y);
-                
-                if (lines.length === 1) {
-                    pdf.text(lines[0], left + 6, y);
-                    y += LINE_HEIGHT;
-                } else {
-                    pdf.text(lines[0], left + 6, y);
+            data.workExperience.forEach((job, jobIndex) => {
+                if (y > 250) {
+                    pdf.addPage();
+                    y = 20;
+                }
+
+                // Company and Date
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(11);
+                pdf.text(job.company, left, y);
+                pdf.text(
+                    `${job.startDate} – ${job.endDate}`,
+                    right,
+                    y,
+                    { align: 'right' }
+                );
+                y += LINE_HEIGHT;
+
+                // Position and Location
+                pdf.setFont('helvetica', 'normal');
+                const positionText = `${job.position} | ${job.location}`;
+                pdf.text(positionText, left, y);
+                y += LINE_HEIGHT;
+
+                // Responsibilities
+                job.responsibilities.forEach(resp => {
+                    if (y > 270) {
+                        pdf.addPage();
+                        y = 20;
+                    }
+                    
+                    const cleanResp = resp.replace(/[^\x00-\x7F]/g, '');
+                    const lines = pdf.splitTextToSize(cleanResp, 170);
+                    
+                    // First line with bullet
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.text('•', left, y);
+                    pdf.text(lines[0], left + 4, y);
                     y += LINE_HEIGHT;
                     
+                    // Additional lines (indented)
                     for (let i = 1; i < lines.length; i++) {
-                        y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                        pdf.text(lines[i], left + 6, y);
+                        if (y > 270) {
+                            pdf.addPage();
+                            y = 20;
+                        }
+                        pdf.text(lines[i], left + 4, y);
                         y += LINE_HEIGHT;
                     }
+                });
+
+                // Space between jobs (except after last one)
+                if (jobIndex < data.workExperience.length - 1) {
+                    y += ITEM_SPACING;
                 }
             });
 
-            y += ITEM_SPACING; // Space between jobs within the same section
-        });
+            y += SECTION_GAP;
 
-        // Remove last ITEM_SPACING and add SECTION_GAP after the last job
-        y = y - ITEM_SPACING + SECTION_GAP;
-        
-        // -------- EDUCATION --------
-        sectionTitle(pdf, 'EDUCATION', left, y);
-        y += SECTION_SPACING;
+            // -------- EDUCATION --------
+            drawSectionTitle(pdf, 'EDUCATION', left, y);
+            y += SECTION_SPACING;
 
-        data.education.forEach((edu, index) => {
-            y = checkPageBreak(pdf, y, LINE_HEIGHT * 3);
+            data.education.forEach((edu, index) => {
+                if (y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                }
 
-            // Institution and Date
-            pdf.setFont('times', 'bold');
+                // Institution and Date
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(11);
+                pdf.text(edu.institution, left, y);
+                pdf.text(
+                    edu.completionDate,
+                    right,
+                    y,
+                    { align: 'right' }
+                );
+                y += LINE_HEIGHT;
+
+                // Degree
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(edu.degree, left, y);
+                
+                // Space between education items
+                if (index < data.education.length - 1) {
+                    y += ITEM_SPACING;
+                }
+            });
+
+            y += SECTION_GAP;
+
+            // -------- OTHERS --------
+            drawSectionTitle(pdf, 'OTHERS', left, y);
+            y += SECTION_SPACING;
+            
+            pdf.setFont('helvetica', 'normal');
             pdf.setFontSize(11);
-            pdf.text(edu.institution, left, y);
-            pdf.text(
-                edu.completionDate,
-                right,
-                y,
-                { align: 'right' }
-            );
+            
+            // Skills
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Skills:', left, y);
             y += LINE_HEIGHT;
+            
+            // Technical Skills
+            pdf.setFont('helvetica', 'normal');
+            const techSkills = data.others.skills.technical.join(', ');
+            const techLines = pdf.splitTextToSize(techSkills, 180);
+            techLines.forEach(line => {
+                if (y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                }
+                pdf.text(line, left + 4, y);
+                y += LINE_HEIGHT;
+            });
+            
+            y += 2; // Small gap
+            
+            // Professional Skills
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Professional:', left, y);
+            y += LINE_HEIGHT;
+            
+            pdf.setFont('helvetica', 'normal');
+            const profSkills = data.others.skills.professional.join(', ');
+            const profLines = pdf.splitTextToSize(profSkills, 180);
+            profLines.forEach(line => {
+                if (y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                }
+                pdf.text(line, left + 4, y);
+                y += LINE_HEIGHT;
+            });
+            
+            y += SECTION_GAP;
+            
+            // Languages
+            if (y > 270) {
+                pdf.addPage();
+                y = 20;
+            }
+            
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Languages:', left, y);
+            y += LINE_HEIGHT;
+            
+            pdf.setFont('helvetica', 'normal');
+            const languagesText = data.others.languages.map(l => `${l.name} (${l.level})`).join(', ');
+            const langLines = pdf.splitTextToSize(languagesText, 180);
+            langLines.forEach(line => {
+                if (y > 270) {
+                    pdf.addPage();
+                    y = 20;
+                }
+                pdf.text(line, left + 4, y);
+                y += LINE_HEIGHT;
+            });
 
-            // Degree
-            pdf.setFont('times', 'normal');
-            pdf.text(edu.degree, left, y);
+            // Save the PDF
+            const fileName = `${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`;
+            pdf.save(fileName);
             
-            // Add spacing only if not the last item
-            if (index < data.education.length - 1) {
-                y += ITEM_SPACING;
-            }
-        });
-
-        // Add consistent gap after EDUCATION content
-        y += SECTION_GAP;
-        
-        // -------- OTHERS --------
-        sectionTitle(pdf, 'OTHERS', left, y);
-        y += SECTION_SPACING;
-        
-        pdf.setFont('times', 'normal');
-        pdf.setFontSize(11);
-        
-        // Skills section
-        y = checkPageBreak(pdf, y, LINE_HEIGHT * 8);
-        
-        // Skills header
-        pdf.setFont('times', 'bold');
-        pdf.text('Skills', left + 2, y);
-        y += LINE_HEIGHT;
-        
-        // Technical skills
-        pdf.text('Technical:', left + 6, y);
-        const techSkillsText = data.others.skills.technical.join(', ');
-        const techSkillsLines = pdf.splitTextToSize(techSkillsText, 165 - pdf.getTextWidth('Technical: '));
-        
-        if (techSkillsLines.length === 1) {
-            pdf.setFont('times', 'normal');
-            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
-            y += LINE_HEIGHT;
-        } else {
-            pdf.setFont('times', 'normal');
-            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < techSkillsLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(techSkillsLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF. Please check console for details.');
         }
-        
-        // Professional skills
-        pdf.setFont('times', 'bold');
-        pdf.text('Professional:', left + 6, y);
-        const profSkillsText = data.others.skills.professional.join(', ');
-        const profSkillsLines = pdf.splitTextToSize(profSkillsText, 165 - pdf.getTextWidth('Professional: '));
-        
-        if (profSkillsLines.length === 1) {
-            pdf.setFont('times', 'normal');
-            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
-            y += LINE_HEIGHT;
-        } else {
-            pdf.setFont('times', 'normal');
-            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < profSkillsLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(profSkillsLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
-        }
-        
-        y += SECTION_GAP; // Consistent gap between Skills and Languages
-        
-        // Languages section
-        y = checkPageBreak(pdf, y, LINE_HEIGHT * 4);
-        pdf.setFont('times', 'bold');
-        pdf.text('Languages:', left + 2, y);
-        y += LINE_HEIGHT;
-        
-        const languagesText = data.others.languages.map(l => `${l.name} (${l.level})`).join(', ');
-        const languagesLines = pdf.splitTextToSize(languagesText, 170 - pdf.getTextWidth('Languages: '));
-        
-        pdf.setFont('times', 'normal');
-        if (languagesLines.length === 1) {
-            pdf.text(languagesLines[0], left + 6, y);
-        } else {
-            pdf.text(languagesLines[0], left + 6, y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < languagesLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(languagesLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
-        }
-            
-        pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
 }
 
 // ---------------- HELPERS ----------------
-function sectionTitle(pdf, text, x, y) {
-    pdf.setFont('times', 'bold');
+function drawSectionTitle(pdf, text, x, y) {
+    pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(12);
     pdf.text(text, x, y);
-    drawRule(pdf, y + 2);
-}
-
-function drawRule(pdf, y) {
     pdf.setLineWidth(0.4);
-    pdf.line(15, y, 195, y);
-}
-
-// Modified checkPageBreak to reserve space for upcoming content
-function checkPageBreak(pdf, y, reserveHeight = 0) {
-    if (y + reserveHeight > 270) { // A4 page height is 297mm, leaving margin
-        pdf.addPage();
-        return 20; // Return to top of new page
-    }
-    return y;
+    pdf.line(15, y + 2, 195, y + 2);
 }
 
 // Initialize the resume when the page loads
