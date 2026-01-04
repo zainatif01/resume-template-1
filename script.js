@@ -158,22 +158,22 @@ function setupPDFDownload() {
             const ITEM_SPACING = 4;
 
             // -------- HEADER --------
-            pdf.setFont('helvetica', 'bold');
+            pdf.setFont('times', 'bold');
             pdf.setFontSize(20);
             pdf.text(data.personal.name, left, y);
             y += 6;
 
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             pdf.setFontSize(10);
             const contactText = `${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`;
             pdf.text(contactText, left, y);
             y += SECTION_GAP;
 
             // -------- SUMMARY --------
-            drawSectionTitle(pdf, 'SUMMARY', left, y);
+            sectionTitle(pdf, 'SUMMARY', left, y);
             y += SECTION_SPACING;
             
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             pdf.setFontSize(11);
             
             // Clean summary text and split into lines
@@ -181,10 +181,7 @@ function setupPDFDownload() {
             const summaryLines = pdf.splitTextToSize(cleanSummary, 180);
             
             summaryLines.forEach((line, index) => {
-                if (index > 0 && y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
                 pdf.text(line, left, y);
                 y += LINE_HEIGHT;
             });
@@ -192,17 +189,14 @@ function setupPDFDownload() {
             y += SECTION_GAP;
 
             // -------- WORK EXPERIENCE --------
-            drawSectionTitle(pdf, 'WORK EXPERIENCE', left, y);
+            sectionTitle(pdf, 'WORK EXPERIENCE', left, y);
             y += SECTION_SPACING;
 
             data.workExperience.forEach((job, jobIndex) => {
-                if (y > 250) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT * 8);
 
                 // Company and Date
-                pdf.setFont('helvetica', 'bold');
+                pdf.setFont('times', 'bold');
                 pdf.setFontSize(11);
                 pdf.text(job.company, left, y);
                 pdf.text(
@@ -214,33 +208,27 @@ function setupPDFDownload() {
                 y += LINE_HEIGHT;
 
                 // Position and Location
-                pdf.setFont('helvetica', 'normal');
+                pdf.setFont('times', 'normal');
                 const positionText = `${job.position} | ${job.location}`;
                 pdf.text(positionText, left, y);
                 y += LINE_HEIGHT;
 
                 // Responsibilities
                 job.responsibilities.forEach(resp => {
-                    if (y > 270) {
-                        pdf.addPage();
-                        y = 20;
-                    }
+                    y = checkPageBreak(pdf, y, LINE_HEIGHT * 3);
                     
                     const cleanResp = resp.replace(/[^\x00-\x7F]/g, '');
                     const lines = pdf.splitTextToSize(cleanResp, 170);
                     
                     // First line with bullet
-                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFont('times', 'normal');
                     pdf.text('•', left, y);
                     pdf.text(lines[0], left + 4, y);
                     y += LINE_HEIGHT;
                     
                     // Additional lines (indented)
                     for (let i = 1; i < lines.length; i++) {
-                        if (y > 270) {
-                            pdf.addPage();
-                            y = 20;
-                        }
+                        y = checkPageBreak(pdf, y, LINE_HEIGHT);
                         pdf.text(lines[i], left + 4, y);
                         y += LINE_HEIGHT;
                     }
@@ -255,17 +243,14 @@ function setupPDFDownload() {
             y += SECTION_GAP;
 
             // -------- EDUCATION --------
-            drawSectionTitle(pdf, 'EDUCATION', left, y);
+            sectionTitle(pdf, 'EDUCATION', left, y);
             y += SECTION_SPACING;
 
             data.education.forEach((edu, index) => {
-                if (y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT * 3);
 
                 // Institution and Date
-                pdf.setFont('helvetica', 'bold');
+                pdf.setFont('times', 'bold');
                 pdf.setFontSize(11);
                 pdf.text(edu.institution, left, y);
                 pdf.text(
@@ -277,7 +262,7 @@ function setupPDFDownload() {
                 y += LINE_HEIGHT;
 
                 // Degree
-                pdf.setFont('helvetica', 'normal');
+                pdf.setFont('times', 'normal');
                 pdf.text(edu.degree, left, y);
                 
                 // Space between education items
@@ -289,26 +274,23 @@ function setupPDFDownload() {
             y += SECTION_GAP;
 
             // -------- OTHERS --------
-            drawSectionTitle(pdf, 'OTHERS', left, y);
+            sectionTitle(pdf, 'OTHERS', left, y);
             y += SECTION_SPACING;
             
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             pdf.setFontSize(11);
             
             // Skills
-            pdf.setFont('helvetica', 'bold');
+            pdf.setFont('times', 'bold');
             pdf.text('Skills:', left, y);
             y += LINE_HEIGHT;
             
             // Technical Skills
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             const techSkills = data.others.skills.technical.join(', ');
             const techLines = pdf.splitTextToSize(techSkills, 180);
             techLines.forEach(line => {
-                if (y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
                 pdf.text(line, left + 4, y);
                 y += LINE_HEIGHT;
             });
@@ -316,18 +298,15 @@ function setupPDFDownload() {
             y += 2; // Small gap
             
             // Professional Skills
-            pdf.setFont('helvetica', 'bold');
+            pdf.setFont('times', 'bold');
             pdf.text('Professional:', left, y);
             y += LINE_HEIGHT;
             
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             const profSkills = data.others.skills.professional.join(', ');
             const profLines = pdf.splitTextToSize(profSkills, 180);
             profLines.forEach(line => {
-                if (y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
                 pdf.text(line, left + 4, y);
                 y += LINE_HEIGHT;
             });
@@ -335,23 +314,17 @@ function setupPDFDownload() {
             y += SECTION_GAP;
             
             // Languages
-            if (y > 270) {
-                pdf.addPage();
-                y = 20;
-            }
+            y = checkPageBreak(pdf, y, LINE_HEIGHT * 4);
             
-            pdf.setFont('helvetica', 'bold');
+            pdf.setFont('times', 'bold');
             pdf.text('Languages:', left, y);
             y += LINE_HEIGHT;
             
-            pdf.setFont('helvetica', 'normal');
+            pdf.setFont('times', 'normal');
             const languagesText = data.others.languages.map(l => `${l.name} (${l.level})`).join(', ');
             const langLines = pdf.splitTextToSize(languagesText, 180);
             langLines.forEach(line => {
-                if (y > 270) {
-                    pdf.addPage();
-                    y = 20;
-                }
+                y = checkPageBreak(pdf, y, LINE_HEIGHT);
                 pdf.text(line, left + 4, y);
                 y += LINE_HEIGHT;
             });
@@ -368,12 +341,25 @@ function setupPDFDownload() {
 }
 
 // ---------------- HELPERS ----------------
-function drawSectionTitle(pdf, text, x, y) {
-    pdf.setFont('helvetica', 'bold');
+function sectionTitle(pdf, text, x, y) {
+    pdf.setFont('times', 'bold');
     pdf.setFontSize(12);
     pdf.text(text, x, y);
+    drawRule(pdf, y + 2);
+}
+
+function drawRule(pdf, y) {
     pdf.setLineWidth(0.4);
-    pdf.line(15, y + 2, 195, y + 2);
+    pdf.line(15, y, 195, y);
+}
+
+// Modified checkPageBreak to reserve space for upcoming content
+function checkPageBreak(pdf, y, reserveHeight = 0) {
+    if (y + reserveHeight > 270) { // A4 page height is 297mm, leaving margin
+        pdf.addPage();
+        return 20; // Return to top of new page
+    }
+    return y;
 }
 
 // Initialize the resume when the page loads
