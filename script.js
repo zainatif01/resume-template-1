@@ -42,12 +42,10 @@ function renderResume(data) {
     // Page title
     document.title = `${fullName} - Resume`;
     
-    // Contact Info
+    // Contact Info (ATS Template - single line)
     const contactInfo = document.getElementById('contact-info');
     contactInfo.innerHTML = `
-        <p><i class="fas fa-envelope"></i> ${data.personal.email}</p>
-        <p><i class="fas fa-phone"></i> ${data.personal.phone}</p>
-        <p><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</p>
+        <p>${data.personal.email} | ${data.personal.phone} | ${data.personal.location}</p>
     `;
     
     // Professional Summary
@@ -65,11 +63,8 @@ function renderResume(data) {
     // Education
     renderEducation(data.education);
     
-    // Personal Details
-    document.getElementById('personal-details').innerHTML = `
-        <p><strong>Date of Birth:</strong> ${data.personal.dateOfBirth}</p>
-        <p><strong>Location:</strong> ${data.personal.location}</p>
-    `;
+    // Certifications
+    renderCertifications(data.certifications);
     
     // Footer
     document.getElementById('footer-text').textContent = data.footer.copyright;
@@ -85,10 +80,13 @@ function renderWorkExperience(experience) {
         jobElement.className = 'experience-item';
         jobElement.innerHTML = `
             <div class="job-header">
-                <h3>${job.company}</h3>
-                <span class="job-date">${job.startDate} - ${job.endDate}</span>
+                <h3 class="job-title">${job.position}</h3>
+                <div class="job-company-info">
+                    <span class="job-company">${job.company}</span>
+                    <span class="job-location">${job.location}</span>
+                    <span class="job-date">${job.startDate} - ${job.endDate}</span>
+                </div>
             </div>
-            <p class="job-position">${job.position} | ${job.location}</p>
             <ul class="job-responsibilities">
                 ${job.responsibilities.map(resp => `<li>${resp}</li>`).join('')}
             </ul>
@@ -97,34 +95,27 @@ function renderWorkExperience(experience) {
     });
 }
 
-// Function to render skills
+// Function to render skills (ATS Template - simple list)
 function renderSkills(skills) {
     const container = document.getElementById('skills-section');
     container.innerHTML = `
-        <div class="skill-category">
+        <div class="skills-container">
             <h4>Technical Skills</h4>
-            <div class="skill-list">
-                ${skills.technical.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-            </div>
+            <p class="skills-list">${skills.technical.join(', ')}</p>
         </div>
-        <div class="skill-category">
+        <div class="skills-container">
             <h4>Professional Skills</h4>
-            <div class="skill-list">
-                ${skills.professional.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-            </div>
+            <p class="skills-list">${skills.professional.join(', ')}</p>
         </div>
     `;
 }
 
-// Function to render languages
+// Function to render languages (ATS Template - simple list)
 function renderLanguages(languages) {
     const container = document.getElementById('languages-list');
-    container.innerHTML = languages.map(lang => `
-        <div class="language-item">
-            <span class="language-name">${lang.name}</span>
-            <span class="language-level">${lang.level}</span>
-        </div>
-    `).join('');
+    container.innerHTML = languages.map(lang => 
+        `<span class="language-item">${lang.name} (${lang.level})</span>`
+    ).join(' | ');
 }
 
 // Function to render education
@@ -132,11 +123,25 @@ function renderEducation(education) {
     const container = document.getElementById('education-list');
     container.innerHTML = education.map(edu => `
         <div class="education-item">
-            <h4>${edu.degree}</h4>
-            <p class="education-detail">${edu.institution}</p>
-            <p class="education-date">${edu.completionDate}</p>
+            <div class="education-header">
+                <h4>${edu.degree}</h4>
+                <span class="education-date">${edu.completionDate}</span>
+            </div>
+            <p class="education-institution">${edu.institution}</p>
+            ${edu.honors ? `<p class="education-honors">${edu.honors}</p>` : ''}
         </div>
     `).join('');
+}
+
+// Function to render certifications
+function renderCertifications(certifications) {
+    const container = document.getElementById('certifications-list');
+    if (certifications && certifications.length > 0) {
+        container.innerHTML = `
+            <h4>Certifications & Training</h4>
+            <p class="certifications-list">${certifications.join(', ')}</p>
+        `;
+    }
 }
 
 function setupPDFDownload() {
@@ -155,80 +160,136 @@ function setupPDFDownload() {
             const pdf = new jsPDF('p', 'mm', 'a4');
 
             const pageWidth = 210;
-            const pageHeight = 297;
-            const margin = 15;
-            const mainX = 65; // main content start (after sidebar)
-            let y = 40; // start y for main content
+            const margin = 20;
+            let y = 20;
             const lineHeight = 6;
+            const contentWidth = pageWidth - (margin * 2);
 
             // ===== HEADER =====
-            drawHeader(pdf, data);
-
-            // ===== SIDEBAR =====
-            drawSidebar(pdf, data);
-
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(22);
+            pdf.text(data.personal.name, margin, y);
+            
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(12);
+            pdf.text(data.personal.title, margin, y + 6);
+            y += 15;
+            
+            // ===== CONTACT INFO =====
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.text(`${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`, margin, y);
+            y += 10;
+            
+            // Draw horizontal line
+            pdf.setDrawColor(33, 150, 243);
+            pdf.setLineWidth(0.5);
+            pdf.line(margin, y, pageWidth - margin, y);
+            y += 10;
+            
             // ===== PROFESSIONAL SUMMARY =====
-            y += 0;
-            coloredSectionTitle(pdf, 'PROFESSIONAL SUMMARY', mainX, y);
-            y += 10;
-            y = addParagraph(pdf, data.summary, mainX, y, pageWidth - mainX - margin, lineHeight);
-
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(33, 150, 243);
+            pdf.text('PROFESSIONAL SUMMARY', margin, y);
+            
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(0, 0, 0);
+            y += 7;
+            y = addParagraph(pdf, data.summary, margin, y, contentWidth, lineHeight);
+            
             // ===== WORK EXPERIENCE =====
-            y += 4;
-            coloredSectionTitle(pdf, 'WORK EXPERIENCE', mainX, y);
+            y += 8;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(33, 150, 243);
+            pdf.text('WORK EXPERIENCE', margin, y);
             y += 10;
+            
             data.workExperience.forEach(job => {
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(11);
-                pdf.text(`${job.position} — ${job.company}`, mainX, y);
-                y += 5;
-
+                pdf.setTextColor(0, 0, 0);
+                pdf.text(job.position, margin, y);
+                
                 pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(9);
-                pdf.text(`${job.startDate} - ${job.endDate} | ${job.location}`, mainX, y);
+                pdf.setFontSize(10);
+                pdf.text(`${job.company} | ${job.location} | ${job.startDate} - ${job.endDate}`, margin + 60, y);
                 y += 5;
-
+                
                 job.responsibilities.forEach(resp => {
-                    y = addParagraph(pdf, `• ${resp}`, mainX + 2, y, pageWidth - mainX - margin, lineHeight);
+                    y = addParagraph(pdf, `• ${resp}`, margin + 2, y, contentWidth - 2, lineHeight);
                 });
                 y += 4;
             });
-
-            // ===== SKILLS =====
-            coloredSectionTitle(pdf, 'SKILLS', mainX, y);
-            y += 10;
-            let sx = mainX;
-            let sy = y;
-
-            const drawSkills = (skillsArray) => {
-                skillsArray.forEach(skill => {
-                    const skillWidth = pdf.getTextWidth(skill) + 6;
-                    if (sx + skillWidth > pageWidth - margin) { // wrap to next line
-                        sx = mainX;
-                        sy += 8;
-                    }
-                    drawSkillTag(pdf, skill, sx, sy);
-                    sx += skillWidth + 6;
-                });
-            };
-
-            drawSkills(data.skills.technical);
-            drawSkills(data.skills.professional);
-            y = sy + 12;
-
+            
             // ===== EDUCATION =====
-            coloredSectionTitle(pdf, 'EDUCATION', mainX, y);
+            y += 4;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(33, 150, 243);
+            pdf.text('EDUCATION', margin, y);
             y += 10;
+            
             data.education.forEach(edu => {
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(11);
-                pdf.text(`${edu.degree} — ${edu.institution}`, mainX, y);
+                pdf.setTextColor(0, 0, 0);
+                pdf.text(edu.degree, margin, y);
+                
                 pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(9);
-                pdf.text(`Completed: ${edu.completionDate}`, mainX, y + 5);
-                y += 12;
+                pdf.setFontSize(10);
+                pdf.text(`${edu.institution} | ${edu.completionDate}`, margin + 60, y);
+                y += 6;
+                
+                if (edu.honors) {
+                    pdf.setFontSize(9);
+                    pdf.text(edu.honors, margin, y);
+                    y += 5;
+                }
+                y += 3;
             });
-
+            
+            // ===== SKILLS =====
+            y += 4;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(33, 150, 243);
+            pdf.text('SKILLS', margin, y);
+            y += 7;
+            
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(0, 0, 0);
+            
+            // Technical Skills
+            y += 3;
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Technical:', margin, y);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(data.skills.technical.join(', '), margin + 22, y);
+            y += 5;
+            
+            // Professional Skills
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('Professional:', margin, y);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(data.skills.professional.join(', '), margin + 27, y);
+            y += 8;
+            
+            // ===== LANGUAGES =====
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(33, 150, 243);
+            pdf.text('LANGUAGES', margin, y);
+            y += 7;
+            
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(data.languages.map(lang => `${lang.name} (${lang.level})`).join(', '), margin, y);
+            
             // ===== SAVE PDF =====
             const filename = `${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`;
             pdf.save(filename);
@@ -244,71 +305,10 @@ function setupPDFDownload() {
 }
 
 // ---------------- HELPER FUNCTIONS ----------------
-function drawHeader(pdf, data) {
-    pdf.setFillColor(33, 150, 243);
-    pdf.rect(0, 0, 210, 30, 'F'); // full-width header
-
-    pdf.setTextColor(255, 255, 255);
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(20);
-    pdf.text(data.personal.name, 15, 18);
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(11);
-    pdf.text(data.personal.title, 15, 25);
-
-    pdf.setTextColor(0, 0, 0); // reset
-}
-
-function drawSidebar(pdf, data) {
-    pdf.setFillColor(245, 247, 250);
-    pdf.rect(0, 30, 60, 267, 'F'); // sidebar background
-
-    let y = 45;
-    const x = 10;
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(11);
-    pdf.text('CONTACT', x, y);
-    y += 6;
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    pdf.text(data.personal.email, x, y); y += 5;
-    pdf.text(data.personal.phone, x, y); y += 5;
-    pdf.text(data.personal.location, x, y); y += 8;
-
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('LANGUAGES', x, y); y += 6;
-
-    pdf.setFont('helvetica', 'normal');
-    data.languages.forEach(lang => {
-        pdf.text(`${lang.name} (${lang.level})`, x, y);
-        y += 5;
-    });
-}
-
-function coloredSectionTitle(pdf, text, x, y) {
-    pdf.setFillColor(33, 150, 243); // blue background
-    pdf.rect(x - 1, y - 5, 120, 7, 'F'); // rectangle behind text
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-    pdf.setTextColor(255, 255, 255);
-    pdf.text(text, x, y);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(0, 0, 0); // reset
-}
-
 function addParagraph(pdf, text, x, y, maxWidth, lineHeight) {
     const lines = pdf.splitTextToSize(text, maxWidth);
     pdf.text(lines, x, y);
     return y + lines.length * lineHeight;
-}
-
-function drawSkillTag(pdf, text, x, y) {
-    const width = pdf.getTextWidth(text) + 6;
-    pdf.setFillColor(220, 230, 255);
-    pdf.roundedRect(x - 2, y - 4, width, 6, 2, 2, 'F');
-    pdf.text(text, x, y);
 }
 
 // Initialize the resume when the page loads
