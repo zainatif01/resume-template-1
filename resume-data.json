@@ -30,18 +30,13 @@
       "TypeScript/JavaScript",
       "HTML5",
       "CSS3/Tailwind CSS",
-      "Next.js",
-      "Responsive Web Design",
       "Git & GitHub",
-      "XML/JSON Data Handling",
-      "UI Debugging & Optimization"
+      "Vercel"
     ],
     "professional": [
       "Problem Solving",
       "Detail Oriented",
-      "Solution Oriented",
-      "Performance Optimization",
-      "Code Maintainability"
+      "Solution Oriented"
     ]
   },
   "languages": [
@@ -50,14 +45,14 @@
   ],
   "education": [
     {
-      "degree": "HSSC: Computer Science",
+      "degree": "HSSC (Computer Science)",
       "institution": "FDC Faisal, Karachi",
-      "completionDate": "Expected: 06/2025"
+      "completionDate": "07/2025"
     },
     {
-      "degree": "SSC: General Science",
-      "institution": "FDC Faisal, Karachi",
-      "completionDate": "10/2022"
+      "degree": "BSSE (Software Engineering)",
+      "institution": "University of Gujrat",
+      "completionDate": "Expected: 06/2029"
     }
   ],
   "footer": {
