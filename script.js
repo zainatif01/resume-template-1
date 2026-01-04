@@ -295,6 +295,13 @@ function checkPageBreak(pdf, y, reserveHeight = 0) {
     return y;
 }
 
+function startSection(pdf, title, x, y) {
+    y = checkPageBreak(pdf, y, SECTION_GAP + 6);
+    y += SECTION_GAP;
+    sectionTitle(pdf, title, x, y);
+    return y + SECTION_GAP;
+}
+
 // Initialize the resume when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     loadResumeData();
