@@ -312,7 +312,7 @@ body {
     margin-right: 0.5rem;
 }
 
-/* ===== DOWNLOAD BUTTON ===== */
+/* ===== BUTTONS ===== */
 .download-section {
     margin-top: var(--spacing-lg);
     text-align: center;
@@ -327,16 +327,49 @@ body {
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius);
-    text-decoration: none;
+    border: none;
+    font-size: 1rem;
     font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
+    font-family: inherit;
 }
 
 .download-btn:hover {
     background: var(--accent-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.download-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.print-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #666;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: 0.75rem;
+    font-family: inherit;
+}
+
+.print-btn:hover {
+    background: #555;
+    transform: translateY(-2px);
 }
 
 /* ===== FOOTER ===== */
@@ -347,72 +380,6 @@ body {
     color: var(--text-light);
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
-}
-
-.footer-note {
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-    opacity: 0.7;
-}
-
-/* ===== PRINT STYLES ===== */
-@media print {
-    body {
-        background: white;
-        padding: 0;
-    }
-    
-    .resume-container {
-        box-shadow: none;
-        max-width: 100%;
-    }
-    
-    .download-section {
-        display: none;
-    }
-    
-    .header {
-        padding: 1.5rem;
-    }
-    
-    .resume-content {
-        padding: 1.5rem;
-    }
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
-    body {
-        padding: var(--spacing-sm);
-    }
-    
-    .header-content {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-    
-    .name-title h1 {
-        font-size: 2rem;
-    }
-    
-    .resume-content {
-        padding: var(--spacing-md);
-    }
-    
-    .skills-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .job-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .contact-info p {
-        font-size: 0.9rem;
-    }
 }
 
 /* ===== LOADING ANIMATION ===== */
@@ -458,56 +425,6 @@ body {
     z-index: 1;
 }
 
-/* PDF-specific styles */
-@media print {
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-    
-    .resume-container {
-        width: 210mm;
-        min-height: 297mm;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        break-inside: avoid;
-    }
-    
-    body {
-        background: white !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .header {
-        -webkit-print-color-adjust: exact;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
-    }
-    
-    .download-section {
-        display: none !important;
-    }
-}
-
-/* Ensure consistent colors in PDF */
-.pdf-export {
-    position: fixed;
-    left: -9999px;
-    top: -9999px;
-}
-
-/* Improve print quality */
-@media print {
-    .skill-tag,
-    .job-date,
-    .download-btn {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        color-adjust: exact;
-    }
-}
-
 @keyframes gradientSpin {
     0% {
         background-position: 0% 50%;
@@ -518,4 +435,137 @@ body {
     100% {
         background-position: 0% 50%;
     }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    /* Remove default browser headers and footers */
+    @page {
+        margin: 0 !important;
+        padding: 0 !important;
+        size: A4 portrait;
+    }
+    
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        font-size: 12pt !important;
+    }
+    
+    .resume-container {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    /* Hide non-essential elements */
+    .download-section,
+    .loading-overlay {
+        display: none !important;
+    }
+    
+    .header {
+        padding: 1.5rem !important;
+        -webkit-print-color-adjust: exact !important;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    }
+    
+    .resume-content {
+        padding: 1.5rem !important;
+    }
+    
+    /* Prevent page breaks inside important sections */
+    .section,
+    .experience-item,
+    .sidebar-section,
+    .education-item {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    /* Ensure colors print correctly */
+    .skill-tag,
+    .job-date,
+    .header {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .name-title h1 {
+        font-size: 2rem;
+    }
+    
+    .resume-content {
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
+    }
+    
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .contact-info p {
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .name-title h1 {
+        font-size: 1.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+}
+
+/* ===== PDF EXPORT TEMPORARY CONTAINER ===== */
+.pdf-export-container {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    width: 1000px;
+    background-color: #ffffff;
+    padding: 40px;
 }
