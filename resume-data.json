@@ -9,17 +9,18 @@
   },
   "summary": "Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.",
   "workExperience": [
+    
     {
       "company": "Airmen Golf Club & Recreational Park",
       "position": "Caddie",
       "location": "Korangi Creek, Karachi",
       "startDate": "12/2020",
       "endDate": "11/2021",
-      "responsibilities": [
-        "Maintained smooth pace of play for golfers on course",
-        "Carried two bags of clubs for full 18-hole rounds of golf"
-      ]
+      "responsibilities": 
+      ["Maintained smooth pace of play for golfers on course",
+        "Carried two bags of clubs for full 18-hole rounds of golf"]
     }
+    
   ],
   "skills": {
     "technical": ["JavaScript", "HTML5", "CSS3", "Databases"],
