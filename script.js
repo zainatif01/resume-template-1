@@ -283,7 +283,10 @@ function checkPage(pdf) {
 }
 
 // Initialize the resume when the page loads
-document.addEventListener('DOMContentLoaded', loadResumeData);
+document.addEventListener('DOMContentLoaded', () => {
+    loadResumeData();
+    setupPDFDownload();
+});
 
 // Optional: Add function to update JSON from a form (for advanced use)
 function updateResumeData(newData) {
