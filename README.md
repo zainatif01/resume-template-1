@@ -1,14 +1,36 @@
-# John Doe - Professional Resume Website
+# Zain Atif - Professional Resume
 
-A responsive, modern resume website with both US and International (European) versions, ready for deployment.
+A clean, modern, and responsive resume website template.
+
+## Quick Start
+
+1. **Download all files** into one folder:
+   - `index.html`
+   - `styles.css`
+   - `script.js`
+   - `README.md`
+
+2. **Open `index.html`** in your web browser
+
+3. **Customize your information**:
+   - Open `index.html` in a text editor
+   - Replace "Zain Atif" with your name
+   - Update contact information
+   - Modify work history and skills
 
 ## Features
 
-- **Dual Versions**: US-style resume and International CV with European standards
-- **Fully Responsive**: Optimized for mobile, tablet, and desktop
-- **Dark/Light Mode**: Toggle between themes with persistent preferences
-- **Print Optimized**: Clean print styles for physical copies
-- **Easy Updates**: Clearly marked sections for simple content modifications
-- **ATS Friendly**: Semantic HTML structure for applicant tracking systems
+- ✅ Clean, professional design
+- ✅ Fully responsive (mobile, tablet, desktop)
+- ✅ Print-optimized styles
+- ✅ Easy to update
+- ✅ No dependencies required
+- ✅ Fast loading
 
-## File Structure
+## How to Update Your Resume
+
+### 1. Personal Information
+Edit the header section in `index.html`:
+```html
+<h1>Your Name</h1>
+<p class="subtitle">Your Professional Title</p>
