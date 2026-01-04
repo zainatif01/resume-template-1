@@ -13,13 +13,11 @@
       "company": "TechNova Solutions Inc.",
       "position": "Front-End Developer",
       "location": "San Francisco, CA (Remote)",
-      "startDate": "03/2023",
-      "endDate": "Present",
+      "startDate": "08/2023",
+      "endDate": "02/2024",
       "responsibilities": [
         "Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform",
         "Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%",
-        "Optimized application performance, reducing initial load time by 40% through code splitting and lazy loading",
-        "Collaborated with US-based design and backend teams to integrate REST APIs and XML data feeds",
         "Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments"
       ]
     },
@@ -27,8 +25,8 @@
       "company": "DigitalFlow Agency",
       "position": "Junior Front-End Developer",
       "location": "New York, NY (Remote)",
-      "startDate": "06/2022",
-      "endDate": "02/2023",
+      "startDate": "01/2023",
+      "endDate": "04/2023",
       "responsibilities": [
         "Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients",
         "Transformed Figma designs into functional web interfaces with pixel-perfect accuracy",
@@ -37,18 +35,6 @@
         "Managed version control using Git/GitHub and deployed projects to Vercel hosting platform"
       ]
     },
-    {
-      "company": "Freelance Front-End Developer",
-      "position": "Front-End Developer",
-      "location": "Remote",
-      "startDate": "01/2022",
-      "endDate": "05/2022",
-      "responsibilities": [
-        "Developed responsive web interfaces for international clients using modern front-end technologies",
-        "Implemented mobile-first responsive designs ensuring optimal performance across all devices",
-        "Provided UI debugging and optimization services for existing web applications"
-      ]
-    }
   ],
   "skills": {
     "technical": [
@@ -72,7 +58,7 @@
     ]
   },
   "languages": [
-    {"name": "English", "level": "Professional Working Proficiency"},
+    {"name": "English", "level": "Intermediate (B2)"},
     {"name": "Urdu", "level": "Native (C2)"}
   ],
   "education": [
