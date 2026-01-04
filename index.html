@@ -3,90 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Zain Atif - Resume</title>
+    <style>
+        /* ATS/Print-friendly resume styles only */
+        body {
+            font-family: "Times New Roman", Times, serif;
+            color: #000;
+            background: white;
+            margin: 0;
+            padding: 20px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        /* Header */
+        .resume-header {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        
+        .name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .contact-info {
+            font-size: 11px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+        
+        /* Experience */
+        .experience-item {
+            margin-bottom: 10px;
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        
+        .company {
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .job-date {
+            font-size: 11px;
+        }
+        
+        .job-position {
+            font-size: 11px;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+        
+        .job-responsibilities {
+            margin: 0;
+            padding-left: 12px;
+        }
+        
+        .job-responsibilities li {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        
+        /* Education */
+        .education-item {
+            margin-bottom: 8px;
+        }
+        
+        .education-degree {
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .education-detail {
+            font-size: 11px;
+        }
+        
+        .education-date {
+            font-size: 11px;
+        }
+        
+        /* Others Section */
+        .others-subsection {
+            margin-bottom: 10px;
+        }
+        
+        .subsection-title {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        
+        .skills-list {
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+        
+        .languages-list {
+            font-size: 11px;
+        }
+        
+        /* Page setup */
+        @page {
+            margin: 0.5in;
+        }
+        
+        /* Utilities */
+        .bold {
+            font-weight: 700;
+        }
+        
+        .italic {
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="spinner"></div>
+    <!-- Header -->
+    <div class="resume-header">
+        <h1 class="name">Zain Atif</h1>
+        <div class="contact-info">
+            <span>zainatif15403@gmail.com</span>
+            <span>+92 3148501486</span>
+            <span>Gujrat, Pakistan</span>
+        </div>
     </div>
-
-    <div class="resume-container" id="resume-content" style="opacity: 0;">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="header-content">
-                <div class="name-title">
-                    <h1 id="resume-name">Loading...</h1>
-                    <p class="subtitle" id="resume-title">Loading...</p>
-                </div>
-                <div class="contact-info" id="contact-info">
-                    <!-- Contact info will be populated by JavaScript -->
-                </div>
-            </div>
-        </header>
-
-        <main class="resume-content">
-            <div class="main-column">
-                <!-- Professional Summary -->
-                <section class="section">
-                    <h2 class="section-title">Summary</h2>
-                    <p class="summary-text" id="summary-text">
-                        Loading...
-                    </p>
-                </section>
-
-                <!-- Work History -->
-                <section class="section">
-                    <h2 class="section-title">Work History</h2>
-                    <div id="work-experience">
-                        <!-- Work experience will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Education -->
-                <section class="section">
-                    <h2 class="section-title">Education</h2>
-                    <div id="education-list">
-                        <!-- Education will be populated by JavaScript -->
-                    </div>
-                </section>
-            </div>
-
-            <div class="sidebar">
-                <!-- Others Section (Skills & Languages) -->
-                <section class="sidebar-section">
-                    <h3 class="sidebar-title">Others</h3>
-                    <div id="others-content">
-                        <!-- Skills and languages will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Personal Details -->
-                <section class="sidebar-section">
-                    <h3 class="sidebar-title">Personal Details</h3>
-                    <div class="personal-detail" id="personal-details">
-                        <!-- Personal details will be populated by JavaScript -->
-                    </div>
-                </section>
-
-                <!-- Download Button -->
-                <div class="download-section">
-                    <button class="download-btn" id="download-pdf-btn" type="button">
-                        <i class="fas fa-download"></i> Generate PDF Resume
-                    </button>
-                </div>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p id="footer-text">© 2024 Zain Atif. All rights reserved.</p>
-        </footer>
+    
+    <!-- Summary -->
+    <div class="section">
+        <h2 class="section-title">Summary</h2>
+        <p>I am a Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specializing in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. I have focused on creating high-performance, accessible web applications with modern UI/UX principles.</p>
     </div>
-    <script src="script.js?v=1.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Work Experience -->
+    <div class="section">
+        <h2 class="section-title">Work Experience</h2>
+        
+        <div class="experience-item">
+            <div class="job-header">
+                <span class="company">TechNova Solutions Inc.</span>
+                <span class="job-date">08/2023 - 02/2024</span>
+            </div>
+            <div class="job-position">Front-End Developer | San Francisco, CA</div>
+            <ul class="job-responsibilities">
+                <li>Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform</li>
+                <li>Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%</li>
+                <li>Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments</li>
+            </ul>
+        </div>
+        
+        <div class="experience-item">
+            <div class="job-header">
+                <span class="company">DigitalFlow Agency</span>
+                <span class="job-date">01/2023 - 04/2023</span>
+            </div>
+            <div class="job-position">Junior Front-End Developer | New York, NY</div>
+            <ul class="job-responsibilities">
+                <li>Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients</li>
+                <li>Implemented Tailwind CSS frameworks across 15+ client projects, ensuring consistent branding</li>
+                <li>Managed version control using Git/GitHub and deployed projects to Vercel hosting platform</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Education -->
+    <div class="section">
+        <h2 class="section-title">Education</h2>
+        
+        <div class="education-item">
+            <div class="education-degree">HSSC (Computer Science)</div>
+            <div class="education-detail">FDC Faisal, Karachi</div>
+            <div class="education-date">07/2025</div>
+        </div>
+        
+        <div class="education-item">
+            <div class="education-degree">BS (Software Engineering)</div>
+            <div class="education-detail">University of Gujrat, Gujrat</div>
+            <div class="education-date">Expected: 06/2029</div>
+        </div>
+    </div>
+    
+    <!-- Others -->
+    <div class="section">
+        <h2 class="section-title">Others</h2>
+        
+        <div class="others-subsection">
+            <div class="subsection-title">Skills</div>
+            <div class="skills-list">
+                <span class="bold">Technical Skills:</span> TypeScript/JavaScript, HTML5, CSS3/Tailwind CSS, Next.js, Vercel, Git & GitHub
+            </div>
+            <div class="skills-list">
+                <span class="bold">Professional Skills:</span> Problem Solving, Detail Oriented, Solution Oriented
+            </div>
+        </div>
+        
+        <div class="others-subsection">
+            <div class="subsection-title">Languages</div>
+            <div class="languages-list">
+                English (Fluent B2), Urdu (Native C2)
+            </div>
+        </div>
+    </div>
+    
+    <!-- Personal Details -->
+    <div class="section">
+        <h2 class="section-title">Personal Details</h2>
+        <div>
+            <div><span class="bold">Date of Birth:</span> 12/10/2004</div>
+            <div><span class="bold">Location:</span> Gujrat, Pakistan</div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple script to apply print styles
+        window.onload = function() {
+            // Apply print styles immediately
+            document.body.classList.add('print-mode');
+            
+            // Optional: Auto-print after a short delay
+            setTimeout(function() {
+                window.print();
+            }, 1000);
+        };
+    </script>
 </body>
 </html>
