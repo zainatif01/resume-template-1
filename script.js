@@ -73,9 +73,6 @@ function renderResume(data) {
     
     // Footer
     document.getElementById('footer-text').textContent = data.footer.copyright;
-    
-    // Setup PDF download button after resume is rendered
-    setTimeout(setupPDFDownload, 100);
 }
 
 // Function to render work experience
@@ -142,65 +139,6 @@ function renderEducation(education) {
     `).join('');
 }
 
-function setupPDFDownload() {
-    const downloadBtn = document.getElementById('download-pdf-btn');
-    
-    downloadBtn.addEventListener('click', async function() {
-        console.log('PDF generation started...');
-        
-        // Show loading state
-        const originalText = this.innerHTML;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
-        this.disabled = true;
-        
-        try {
-            // Use html2canvas to capture the resume
-            const element = document.getElementById('resume-content');
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff'
-            });
-            
-            // Convert canvas to image
-            const imgData = canvas.toDataURL('image/png');
-            
-            // Create PDF with jsPDF
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            
-            // Calculate dimensions to fit the image on the page
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
-            
-            // Add image to PDF
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth * ratio / 3, imgHeight * ratio / 3);
-            
-            // Save PDF
-            const name = document.getElementById('resume-name').textContent;
-            const cleanName = name.replace(/\s+/g, '_').replace(/[^\w\s-]/g, '');
-            const filename = `${cleanName}_Resume.pdf`;
-            
-            pdf.save(filename);
-            
-            console.log('PDF generated successfully as image-based PDF');
-            
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            alert('Error generating PDF: ' + error.message);
-        } finally {
-            // Restore button
-            this.innerHTML = originalText;
-            this.disabled = false;
-        }
-    });
-}
-
 // Initialize the resume when the page loads
 document.addEventListener('DOMContentLoaded', loadResumeData);
 
@@ -211,20 +149,3 @@ function updateResumeData(newData) {
     console.log('Data updated (simulated):', newData);
     renderResume(newData);
 }
-
-// Debug: Check if libraries are loaded
-window.addEventListener('load', function() {
-    console.log('Window loaded - Checking libraries...');
-    console.log('html2canvas available:', typeof html2canvas !== 'undefined');
-    console.log('jsPDF available:', typeof window.jspdf !== 'undefined');
-    
-    // Verify download button exists
-    const downloadBtn = document.getElementById('download-pdf-btn');
-    console.log('Download button found:', !!downloadBtn);
-    
-    // If download button exists but setupPDFDownload hasn't run yet, set it up
-    if (downloadBtn && !downloadBtn.hasAttribute('data-pdf-setup')) {
-        downloadBtn.setAttribute('data-pdf-setup', 'true');
-        console.log('Manually setting up PDF download...');
-    }
-});
