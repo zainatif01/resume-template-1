@@ -31,6 +31,7 @@ async function loadResumeData() {
         }, 600);
     }
 }
+
 // Function to render all resume data
 function renderResume(data) {
     // Personal Information
@@ -48,19 +49,10 @@ function renderResume(data) {
         <p><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</p>
     `;
    
-    // Professional Summary
     document.getElementById('summary-text').textContent = data.summary;
-   
-    // Work Experience
     renderWorkExperience(data.workExperience);
-   
-    // Skills
     renderSkills(data.skills);
-   
-    // Languages
     renderLanguages(data.languages);
-   
-    // Education
     renderEducation(data.education);
    
     // Personal Details
@@ -72,6 +64,7 @@ function renderResume(data) {
     // Footer
     document.getElementById('footer-text').textContent = data.footer.copyright;
 }
+
 // Function to render work experience
 function renderWorkExperience(experience) {
     const container = document.getElementById('work-experience');
@@ -93,6 +86,7 @@ function renderWorkExperience(experience) {
         container.appendChild(jobElement);
     });
 }
+
 // Function to render skills
 function renderSkills(skills) {
     const container = document.getElementById('skills-section');
@@ -111,6 +105,7 @@ function renderSkills(skills) {
         </div>
     `;
 }
+
 // Function to render languages
 function renderLanguages(languages) {
     const container = document.getElementById('languages-list');
