@@ -1,0 +1,49 @@
+{
+  "personal": {
+    "name": "Zain Atif",
+    "title": "Web Developer & IT Professional",
+    "email": "zainatif15403@gmail.com",
+    "phone": "+92 3148501486",
+    "location": "Karachi, Pakistan",
+    "dateOfBirth": "12/10/2004"
+  },
+  "summary": "Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.",
+  "workExperience": [
+    {
+      "company": "Airmen Golf Club & Recreational Park",
+      "position": "Caddie",
+      "location": "Korangi Creek, Karachi",
+      "startDate": "12/2020",
+      "endDate": "11/2021",
+      "responsibilities": [
+        "Maintained smooth pace of play for golfers on course",
+        "Carried two bags of clubs for full 18-hole rounds of golf"
+      ]
+    }
+  ],
+  "skills": {
+    "technical": ["JavaScript", "HTML5", "CSS3", "Databases"],
+    "professional": ["Problem Solving", "Communication", "Customer Service", "Time Management"]
+  },
+  "languages": [
+    {"name": "Urdu", "level": "Native (C2)"},
+    {"name": "English", "level": "Upper Intermediate (B2)"},
+    {"name": "Punjabi", "level": "Upper Intermediate (B2)"}
+  ],
+  "education": [
+    {
+      "degree": "HSSC: Computer Science",
+      "institution": "FDC Faisal, Karachi",
+      "completionDate": "Expected: 06/2025"
+    },
+    {
+      "degree": "SSC: General Science",
+      "institution": "FDC Faisal, Karachi",
+      "completionDate": "10/2022"
+    }
+  ],
+  "footer": {
+    "copyright": "© 2024 Zain Atif. All rights reserved.",
+    "note": "Last updated: "
+  }
+}
