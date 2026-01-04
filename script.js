@@ -142,7 +142,7 @@ function renderEducation(education) {
     `).join('');
 }
 
-// PDF Download Functionality with Selectable Text and Graphics
+// PDF Download Functionality with Selectable Text and Graphics (FIXED)
 function setupPDFDownload() {
     const downloadBtn = document.getElementById('download-pdf-btn');
     
@@ -202,18 +202,6 @@ function setupPDFDownload() {
                     return true;
                 }
                 return false;
-            };
-            
-            // Helper function to draw rounded rectangle (FIXED)
-            const drawRoundedRect = (x, y, width, height, radius, fillColor = null, strokeColor = null) => {
-                if (fillColor) {
-                    pdf.setFillColor(...fillColor);
-                    pdf.rect(x, y, width, height, 'F');
-                }
-                if (strokeColor) {
-                    pdf.setDrawColor(...strokeColor);
-                    pdf.rect(x, y, width, height, 'S');
-                }
             };
             
             // ===== BLUE HEADER SECTION =====
@@ -280,9 +268,9 @@ function setupPDFDownload() {
             const summaryLines = pdf.splitTextToSize(summary, pageWidth - 2*margin);
             const summaryHeight = summaryLines.length * 4.5;
             
-            // Light background for summary
+            // Light background for summary - FIXED: removed roundedRect
             pdf.setFillColor(...colors.background);
-            pdf.roundedRect(margin, yPos, pageWidth - 2*margin, summaryHeight + 10, 3, 'F');
+            pdf.rect(margin, yPos, pageWidth - 2*margin, summaryHeight + 10, 'F');
             
             // Summary text
             pdf.setFontSize(11);
@@ -330,10 +318,10 @@ function setupPDFDownload() {
                 pdf.setTextColor(...colors.primary);
                 pdf.text(company, margin + 10, yPos + 8);
                 
-                // Date badge
+                // Date badge - FIXED: removed roundedRect
                 const dateWidth = pdf.getTextWidth(date);
                 pdf.setFillColor(...colors.secondary);
-                pdf.roundedRect(pageWidth - margin - dateWidth - 10, yPos + 2, dateWidth + 8, 10, 5, 'F');
+                pdf.rect(pageWidth - margin - dateWidth - 10, yPos + 2, dateWidth + 8, 10, 'F');
                 pdf.setTextColor(...colors.white);
                 pdf.setFontSize(9);
                 pdf.text(date, pageWidth - margin - dateWidth - 6, yPos + 8.5);
@@ -414,12 +402,12 @@ function setupPDFDownload() {
                         tagY += 8;
                     }
                     
-                    // Draw tag background
+                    // Draw tag background - FIXED: removed roundedRect
                     pdf.setFillColor(...colors.background);
                     pdf.setDrawColor(...colors.border);
                     pdf.setLineWidth(0.5);
-                    pdf.roundedRect(tagX, tagY, tagWidth, 6, 3, 'F');
-                    pdf.roundedRect(tagX, tagY, tagWidth, 6, 3, 'S');
+                    pdf.rect(tagX, tagY, tagWidth, 6, 'F');
+                    pdf.rect(tagX, tagY, tagWidth, 6, 'S');
                     
                     // Tag text
                     pdf.setFontSize(9);
@@ -564,11 +552,6 @@ function setupPDFDownload() {
                 
                 yPos += 7;
             });
-            
-            // ===== MAIN COLUMN CONTINUED =====
-            // Reset to left column for any additional content
-            pdf.addPage();
-            yPos = margin;
             
             // ===== FOOTER =====
             // Draw footer background
