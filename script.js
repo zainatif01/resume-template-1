@@ -204,17 +204,16 @@ function setupPDFDownload() {
                 return false;
             };
             
-            // Helper function to draw rounded rectangle
+            // Helper function to draw rounded rectangle (FIXED)
             const drawRoundedRect = (x, y, width, height, radius, fillColor = null, strokeColor = null) => {
                 if (fillColor) {
                     pdf.setFillColor(...fillColor);
+                    pdf.rect(x, y, width, height, 'F');
                 }
                 if (strokeColor) {
                     pdf.setDrawColor(...strokeColor);
+                    pdf.rect(x, y, width, height, 'S');
                 }
-                
-                // Simplified rounded rect (jsPDF doesn't have native rounded rect)
-                pdf.rect(x, y, width, height, fillColor ? 'F' : 'S');
             };
             
             // ===== BLUE HEADER SECTION =====
