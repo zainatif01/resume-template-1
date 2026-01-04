@@ -154,81 +154,79 @@ function setupPDFDownload() {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
 
-            const contentX = 70; // Main column start
-            let y = 45;
-
-            // ===== HEADER & SIDEBAR =====
-            drawHeader(pdf, data);
-            drawSidebar(pdf, data);
-
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const margin = 15;
+            const mainX = 65; // main content start (after sidebar)
+            let y = 40; // start y for main content
             const lineHeight = 6;
 
+            // ===== HEADER =====
+            drawHeader(pdf, data);
+
+            // ===== SIDEBAR =====
+            drawSidebar(pdf, data);
+
             // ===== PROFESSIONAL SUMMARY =====
-            sectionTitle(pdf, 'PROFESSIONAL SUMMARY', contentX, y);
-            y += 8;
-            y = addParagraph(pdf, data.summary, contentX, y, 210, lineHeight);
+            y += 0;
+            coloredSectionTitle(pdf, 'PROFESSIONAL SUMMARY', mainX, y);
+            y += 10;
+            y = addParagraph(pdf, data.summary, mainX, y, pageWidth - mainX - margin, lineHeight);
 
             // ===== WORK EXPERIENCE =====
             y += 4;
-            sectionTitle(pdf, 'WORK EXPERIENCE', contentX, y);
-            y += 8;
-
+            coloredSectionTitle(pdf, 'WORK EXPERIENCE', mainX, y);
+            y += 10;
             data.workExperience.forEach(job => {
-                pdf.setFontSize(11);
                 pdf.setFont('helvetica', 'bold');
-                pdf.text(`${job.position} — ${job.company}`, contentX, y);
+                pdf.setFontSize(11);
+                pdf.text(`${job.position} — ${job.company}`, mainX, y);
                 y += 5;
 
-                pdf.setFontSize(9);
                 pdf.setFont('helvetica', 'normal');
-                pdf.text(`${job.startDate} - ${job.endDate} | ${job.location}`, contentX, y);
+                pdf.setFontSize(9);
+                pdf.text(`${job.startDate} - ${job.endDate} | ${job.location}`, mainX, y);
                 y += 5;
 
                 job.responsibilities.forEach(resp => {
-                    y = addParagraph(pdf, `• ${resp}`, contentX + 2, y, 210, lineHeight);
+                    y = addParagraph(pdf, `• ${resp}`, mainX + 2, y, pageWidth - mainX - margin, lineHeight);
                 });
-
                 y += 4;
             });
 
             // ===== SKILLS =====
-            sectionTitle(pdf, 'SKILLS', contentX, y);
-            y += 8;
-
-            let sx = contentX;
+            coloredSectionTitle(pdf, 'SKILLS', mainX, y);
+            y += 10;
+            let sx = mainX;
             let sy = y;
 
-            data.skills.technical.forEach(skill => {
-                drawSkillTag(pdf, skill, sx, sy);
-                sx += pdf.getTextWidth(skill) + 12;
-                if (sx > 185) {
-                    sx = contentX;
-                    sy += 8;
-                }
-            });
+            const drawSkills = (skillsArray) => {
+                skillsArray.forEach(skill => {
+                    const skillWidth = pdf.getTextWidth(skill) + 6;
+                    if (sx + skillWidth > pageWidth - margin) { // wrap to next line
+                        sx = mainX;
+                        sy += 8;
+                    }
+                    drawSkillTag(pdf, skill, sx, sy);
+                    sx += skillWidth + 6;
+                });
+            };
 
-            data.skills.professional.forEach(skill => {
-                drawSkillTag(pdf, skill, sx, sy);
-                sx += pdf.getTextWidth(skill) + 12;
-                if (sx > 185) {
-                    sx = contentX;
-                    sy += 8;
-                }
-            });
-
-            y = sy + 10;
+            drawSkills(data.skills.technical);
+            drawSkills(data.skills.professional);
+            y = sy + 12;
 
             // ===== EDUCATION =====
-            sectionTitle(pdf, 'EDUCATION', contentX, y);
-            y += 8;
-
+            coloredSectionTitle(pdf, 'EDUCATION', mainX, y);
+            y += 10;
             data.education.forEach(edu => {
-                pdf.text(
-                    `${edu.degree} — ${edu.institution} (${edu.completionDate})`,
-                    contentX,
-                    y
-                );
-                y += 6;
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(11);
+                pdf.text(`${edu.degree} — ${edu.institution}`, mainX, y);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(9);
+                pdf.text(`Completed: ${edu.completionDate}`, mainX, y + 5);
+                y += 12;
             });
 
             // ===== SAVE PDF =====
@@ -245,41 +243,29 @@ function setupPDFDownload() {
     });
 }
 
-
-function addParagraph(pdf, text, x, y, pageWidth, lineHeight) {
-    const lines = pdf.splitTextToSize(text, pageWidth - x - 15);
-    pdf.text(lines, x, y);
-    return y + lines.length * lineHeight;
-}
-
-function checkPage(pdf) {
-    if (pdf.internal.getCurrentPageInfo().pageNumber > 1) return;
-}
-
+// ---------------- HELPER FUNCTIONS ----------------
 function drawHeader(pdf, data) {
-    // Header background
     pdf.setFillColor(33, 150, 243);
-    pdf.rect(0, 0, 210, 30, 'F');
+    pdf.rect(0, 0, 210, 30, 'F'); // full-width header
 
     pdf.setTextColor(255, 255, 255);
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(20);
     pdf.text(data.personal.name, 15, 18);
 
-    pdf.setFontSize(11);
     pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
     pdf.text(data.personal.title, 15, 25);
 
-    pdf.setTextColor(0, 0, 0);
+    pdf.setTextColor(0, 0, 0); // reset
 }
 
 function drawSidebar(pdf, data) {
     pdf.setFillColor(245, 247, 250);
-    pdf.rect(0, 30, 60, 267, 'F');
+    pdf.rect(0, 30, 60, 267, 'F'); // sidebar background
 
     let y = 45;
     const x = 10;
-
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(11);
     pdf.text('CONTACT', x, y);
@@ -292,8 +278,7 @@ function drawSidebar(pdf, data) {
     pdf.text(data.personal.location, x, y); y += 8;
 
     pdf.setFont('helvetica', 'bold');
-    pdf.text('LANGUAGES', x, y);
-    y += 6;
+    pdf.text('LANGUAGES', x, y); y += 6;
 
     pdf.setFont('helvetica', 'normal');
     data.languages.forEach(lang => {
@@ -302,18 +287,21 @@ function drawSidebar(pdf, data) {
     });
 }
 
-function sectionTitle(pdf, text, x, y) {
+function coloredSectionTitle(pdf, text, x, y) {
+    pdf.setFillColor(33, 150, 243); // blue background
+    pdf.rect(x - 1, y - 5, 120, 7, 'F'); // rectangle behind text
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(12);
-    pdf.setTextColor(33, 150, 243);
+    pdf.setTextColor(255, 255, 255);
     pdf.text(text, x, y);
-
-    pdf.setDrawColor(33, 150, 243);
-    pdf.setLineWidth(0.5);
-    pdf.line(x, y + 1.5, x + 120, y + 1.5);
-
     pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(0, 0, 0);
+    pdf.setTextColor(0, 0, 0); // reset
+}
+
+function addParagraph(pdf, text, x, y, maxWidth, lineHeight) {
+    const lines = pdf.splitTextToSize(text, maxWidth);
+    pdf.text(lines, x, y);
+    return y + lines.length * lineHeight;
 }
 
 function drawSkillTag(pdf, text, x, y) {
