@@ -1,43 +1,56 @@
 {
   "personal": {
     "name": "Zain Atif",
-    "title": "Front-End WEB4 Developer",
+    "title": "Front-End Developer",
     "email": "zainatif15403@gmail.com",
     "phone": "+92 3148501486",
     "location": "Gujrat, Pakistan",
-    "dateOfBirth": "12/10/2004"
+    "portfolio": "YourPortfolioURL.com", // Added portfolio field
+    "linkedin": "linkedin.com/in/yourprofile" // Added LinkedIn field
   },
-  "summary": "Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.",
+  "summary": "Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specialized in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. Passionate about creating high-performance, accessible web applications with modern UI/UX principles. Strong focus on debugging, optimization, and delivering maintainable solutions.",
   "workExperience": [
-    
     {
-      "company": "Airmen Golf Club & Recreational Park",
-      "position": "Caddie",
-      "location": "Korangi Creek, Karachi",
-      "startDate": "12/2020",
-      "endDate": "11/2021",
-      "responsibilities": 
-      ["Maintained smooth pace of play for golfers on course",
-        "Carried two bags of clubs for full 18-hole rounds of golf"]
-    },
-    {
-      "company": "Airmen Golf Club & Recreational Park",
-      "position": "Caddie",
-      "location": "Korangi Creek, Karachi",
-      "startDate": "12/2020",
-      "endDate": "11/2021",
-      "responsibilities": 
-      ["Maintained smooth pace of play for golfers on course",
-        "Carried two bags of clubs for full 18-hole rounds of golf"]
+      "company": "Freelance Front-End Developer",
+      "position": "Front-End Developer",
+      "location": "Remote",
+      "startDate": "01/2022",
+      "endDate": "Present",
+      "responsibilities": [
+        "Develop responsive and interactive web interfaces using TypeScript, HTML5, and CSS3",
+        "Implement modern UI designs with Tailwind CSS for consistent styling across platforms",
+        "Build performant web applications using Next.js framework",
+        "Debug and optimize existing user interfaces for improved performance and maintainability",
+        "Manage version control using Git & GitHub for collaborative development",
+        "Handle data integrations and processing using XML and JSON formats",
+        "Ensure cross-browser compatibility and mobile-responsive design implementation"
+      ]
     }
-    
   ],
   "skills": {
-    "technical": ["JavaScript", "HTML5", "CSS3", "Databases"],
-    "professional": ["Problem Solving", "Communication", "Customer Service", "Time Management"]
+    "technical": [
+      "TypeScript/JavaScript",
+      "HTML5",
+      "CSS3/Tailwind CSS",
+      "Next.js",
+      "React",
+      "Git & GitHub",
+      "Responsive Web Design",
+      "XML/JSON Data Handling",
+      "UI Debugging & Optimization",
+      "Cross-Browser Compatibility"
+    ],
+    "professional": [
+      "Problem Solving",
+      "Detail Oriented",
+      "Solution Oriented",
+      "Performance Optimization",
+      "Code Maintainability",
+      "Modern UI/UX Principles"
+    ]
   },
   "languages": [
-    {"name": "English", "level": "Intermediate (B2)"},
+    {"name": "English", "level": "Professional Working Proficiency"},
     {"name": "Urdu", "level": "Native (C2)"}
   ],
   "education": [
@@ -50,6 +63,18 @@
       "degree": "SSC: General Science",
       "institution": "FDC Faisal, Karachi",
       "completionDate": "10/2022"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Portfolio Website",
+      "technologies": ["Next.js", "TypeScript", "Tailwind CSS"],
+      "description": "Responsive portfolio showcasing front-end projects with optimized performance"
+    },
+    {
+      "name": "E-commerce UI",
+      "technologies": ["React", "Tailwind CSS", "JSON"],
+      "description": "Interactive product interface with responsive design and data integration"
     }
   ],
   "footer": {
