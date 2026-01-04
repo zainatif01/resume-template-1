@@ -139,6 +139,132 @@ function renderEducation(education) {
     `).join('');
 }
 
+function setupPDFDownload() {
+    const downloadBtn = document.getElementById('download-pdf-btn');
+
+    downloadBtn.addEventListener('click', async function () {
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating ATS PDF...';
+        this.disabled = true;
+
+        try {
+            const response = await fetch(`resume-data.json?version=${Date.now()}`);
+            const data = await response.json();
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            const pageWidth = 210;
+            const margin = 15;
+            let y = 20;
+
+            const lineHeight = 6;
+
+            pdf.setFont('helvetica', 'normal');
+
+            // ===== HEADER =====
+            pdf.setFontSize(18);
+            pdf.text(data.personal.name, margin, y);
+            y += 8;
+
+            pdf.setFontSize(11);
+            pdf.text(data.personal.title, margin, y);
+            y += 6;
+
+            pdf.setFontSize(10);
+            pdf.text(
+                `${data.personal.email} | ${data.personal.phone} | ${data.personal.location}`,
+                margin,
+                y
+            );
+            y += 10;
+
+            // ===== SUMMARY =====
+            sectionTitle(pdf, 'PROFESSIONAL SUMMARY', margin, y);
+            y += 6;
+
+            y = addParagraph(pdf, data.summary, margin, y, pageWidth, lineHeight);
+
+            // ===== WORK EXPERIENCE =====
+            sectionTitle(pdf, 'WORK EXPERIENCE', margin, y);
+            y += 6;
+
+            data.workExperience.forEach(job => {
+                pdf.setFontSize(11);
+                pdf.text(`${job.position} — ${job.company}`, margin, y);
+                y += 5;
+
+                pdf.setFontSize(9);
+                pdf.text(`${job.startDate} - ${job.endDate} | ${job.location}`, margin, y);
+                y += 5;
+
+                job.responsibilities.forEach(resp => {
+                    y = addParagraph(pdf, `• ${resp}`, margin + 2, y, pageWidth, lineHeight);
+                });
+
+                y += 4;
+                checkPage(pdf);
+            });
+
+            // ===== SKILLS =====
+            sectionTitle(pdf, 'SKILLS', margin, y);
+            y += 6;
+
+            pdf.setFontSize(10);
+            y = addParagraph(
+                pdf,
+                `Technical Skills: ${data.skills.technical.join(', ')}`,
+                margin,
+                y,
+                pageWidth,
+                lineHeight
+            );
+
+            y = addParagraph(
+                pdf,
+                `Professional Skills: ${data.skills.professional.join(', ')}`,
+                margin,
+                y,
+                pageWidth,
+                lineHeight
+            );
+
+            // ===== EDUCATION =====
+            sectionTitle(pdf, 'EDUCATION', margin, y);
+            y += 6;
+
+            data.education.forEach(edu => {
+                pdf.text(
+                    `${edu.degree} — ${edu.institution} (${edu.completionDate})`,
+                    margin,
+                    y
+                );
+                y += 6;
+            });
+
+            // ===== LANGUAGES =====
+            sectionTitle(pdf, 'LANGUAGES', margin, y);
+            y += 6;
+
+            data.languages.forEach(lang => {
+                pdf.text(`${lang.name}: ${lang.level}`, margin, y);
+                y += 5;
+            });
+
+            // ===== SAVE =====
+            const filename = `${data.personal.name.replace(/\s+/g, '_')}_ATS_Resume.pdf`;
+            pdf.save(filename);
+
+        } catch (err) {
+            console.error(err);
+            alert('Failed to generate ATS resume.');
+        } finally {
+            this.innerHTML = originalText;
+            this.disabled = false;
+        }
+    });
+}
+
 // Initialize the resume when the page loads
 document.addEventListener('DOMContentLoaded', loadResumeData);
 
