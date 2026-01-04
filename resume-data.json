@@ -5,8 +5,6 @@
     "email": "zainatif15403@gmail.com",
     "phone": "+92 3148501486",
     "location": "Gujrat, Pakistan",
-    "portfolio": "YourPortfolioURL.com", // Added portfolio field
-    "linkedin": "linkedin.com/in/yourprofile" // Added LinkedIn field
   },
   "summary": "Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specialized in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. Passionate about creating high-performance, accessible web applications with modern UI/UX principles. Strong focus on debugging, optimization, and delivering maintainable solutions.",
   "workExperience": [
