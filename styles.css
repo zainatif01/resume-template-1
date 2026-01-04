@@ -475,3 +475,139 @@ body {
     background-color: #ffffff;
     padding: 40px;
 }
+
+/* ===========================
+   ATS / PRINT RESUME STYLES
+   =========================== */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+        font-family: "Times New Roman", Times, serif;
+        color: #000;
+    }
+
+    .loading-overlay,
+    .download-section,
+    .footer {
+        display: none !important;
+    }
+
+    .resume-container {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+    }
+
+    /* REMOVE WEB HEADER */
+    .header {
+        background: none;
+        color: #000;
+        padding: 0;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .name-title h1 {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    .contact-info {
+        font-size: 11px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .contact-info i {
+        display: none;
+    }
+
+    /* SINGLE COLUMN */
+    .resume-content {
+        display: block;
+        padding: 0;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    /* SECTION STYLING */
+    .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-bottom: 1px solid #000;
+        padding-bottom: 2px;
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .section-title::after {
+        display: none;
+    }
+
+    /* EXPERIENCE */
+    .experience-item {
+        background: none;
+        border: none;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    .job-header h3 {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .job-date {
+        background: none;
+        color: #000;
+        padding: 0;
+        font-size: 11px;
+    }
+
+    .job-position {
+        font-size: 11px;
+        font-style: italic;
+        margin-bottom: 4px;
+    }
+
+    .job-responsibilities li {
+        font-size: 11px;
+        padding-left: 12px;
+    }
+
+    .job-responsibilities li::before {
+        content: "-";
+        color: #000;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+        display: block;
+    }
+
+    .skill-tag {
+        border: none;
+        padding: 0;
+        margin-right: 8px;
+        font-size: 11px;
+    }
+
+    /* SUMMARY TEXT */
+    .summary-text {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+}
