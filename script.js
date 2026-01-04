@@ -167,191 +167,101 @@ function setupPDFDownload() {
         y += 12;
 
         // -------- SUMMARY --------
-        sectionTitle(pdf, 'SUMMARY', left, y);
-        y += SECTION_SPACING;
-        
-        pdf.setFont('times', 'normal');
-        pdf.setFontSize(11);
-        
-        // Fix: Use proper line spacing for summary paragraph
-        const summaryLines = pdf.splitTextToSize(data.summary, 180);
-        summaryLines.forEach((line, index) => {
-            pdf.text(line, left, y);
-            y += LINE_HEIGHT;
-        });
-        y += ITEM_SPACING;
-
-        // -------- EXPERIENCE --------
-        sectionTitle(pdf, 'WORK EXPERIENCE', left, y);
-        y += SECTION_SPACING;
-
-        data.workExperience.forEach(job => {
-            y = checkPageBreak(pdf, y, LINE_HEIGHT * 10); // Reserve space for next job
-
-            // Line 1 - Company and Date
-            pdf.setFont('times', 'bold');
-            pdf.setFontSize(11);
-            pdf.text(job.company, left, y);
-            pdf.text(
-                `${job.startDate} – ${job.endDate}`,
-                right,
-                y,
-                { align: 'right' }
-            );
-            y += LINE_HEIGHT;
-
-            // Line 2 - Position and Location
+        y = startSection(pdf, 'SUMMARY', left, y);
+            
             pdf.setFont('times', 'normal');
-            pdf.text(job.position, left, y);
-            pdf.text(job.location, right, y, { align: 'right' });
-            y += LINE_HEIGHT;
-
-            // Bullets - Using consistent line spacing
-            job.responsibilities.forEach(r => {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT * 3); // Reserve space for bullet
-                
-                // Split text into multiple lines if needed
-                const lines = pdf.splitTextToSize(r, 170);
-                
-                // Draw bullet point
-                pdf.text('•', left + 2, y);
-                
-                // Draw text with consistent line spacing
-                if (lines.length === 1) {
-                    pdf.text(lines[0], left + 6, y);
-                    y += LINE_HEIGHT;
-                } else {
-                    // For multi-line bullet points
-                    pdf.text(lines[0], left + 6, y);
-                    y += LINE_HEIGHT;
-                    
-                    // Additional lines (indented)
-                    for (let i = 1; i < lines.length; i++) {
-                        y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                        pdf.text(lines[i], left + 6, y);
-                        y += LINE_HEIGHT;
-                    }
-                }
+            pdf.setFontSize(11);
+            
+            const summaryLines = pdf.splitTextToSize(data.summary, 180);
+            summaryLines.forEach(line => {
+                pdf.text(line, left, y);
+                y += LINE_HEIGHT;
             });
 
-            y += ITEM_SPACING;
-        });
-
-        // Fix 2: Apply SECTION_SPACING before EDUCATION
-        y += SECTION_SPACING - ITEM_SPACING; // Adjust since last job added ITEM_SPACING
+        // -------- EXPERIENCE --------
+            y = startSection(pdf, 'WORK EXPERIENCE', left, y);
+            
+            data.workExperience.forEach(job => {
+                y = checkPageBreak(pdf, y, LINE_HEIGHT * 8);
+            
+                pdf.setFont('times', 'bold');
+                pdf.text(job.company, left, y);
+                pdf.text(`${job.startDate} – ${job.endDate}`, right, y, { align: 'right' });
+                y += LINE_HEIGHT;
+            
+                pdf.setFont('times', 'normal');
+                pdf.text(job.position, left, y);
+                pdf.text(job.location, right, y, { align: 'right' });
+                y += LINE_HEIGHT;
+            
+                job.responsibilities.forEach(r => {
+                    const lines = pdf.splitTextToSize(r, 170);
+                    pdf.text('•', left + 2, y);
+            
+                    lines.forEach((line, i) => {
+                        pdf.text(line, left + 6, y);
+                        y += LINE_HEIGHT;
+                        if (i < lines.length - 1) {
+                            y = checkPageBreak(pdf, y, LINE_HEIGHT);
+                        }
+                    });
+                });
+            
+                y += ITEM_SPACING;
+            });
         
         // -------- EDUCATION --------
-        sectionTitle(pdf, 'EDUCATION', left, y);
-        y += SECTION_SPACING;
-
+        y = startSection(pdf, 'EDUCATION', left, y);
+    
         data.education.forEach(edu => {
-            y = checkPageBreak(pdf, y, LINE_HEIGHT * 3); // Reserve space for education entry
-
-            // Institution and Date
+            y = checkPageBreak(pdf, y, LINE_HEIGHT * 3);
+        
             pdf.setFont('times', 'bold');
-            pdf.setFontSize(11);
             pdf.text(edu.institution, left, y);
-            pdf.text(
-                edu.completionDate,
-                right,
-                y,
-                { align: 'right' }
-            );
+            pdf.text(edu.completionDate, right, y, { align: 'right' });
             y += LINE_HEIGHT;
-
-            // Degree
+        
             pdf.setFont('times', 'normal');
             pdf.text(edu.degree, left, y);
             y += ITEM_SPACING;
         });
-
-        // Fix 2: Apply SECTION_SPACING before OTHERS
-        y += SECTION_SPACING; // Adjust since last education entry added ITEM_SPACING
         
         // -------- OTHERS --------
-        sectionTitle(pdf, 'OTHERS', left, y);
-        y += SECTION_SPACING;
+        y = startSection(pdf, 'OTHERS', left, y);
         
-        // Set font size for OTHERS section content
-        pdf.setFont('times', 'normal');
-        pdf.setFontSize(11);
-        
-        // Skills section
-        y = checkPageBreak(pdf, y, LINE_HEIGHT * 8);
-        
-        // Skills header
         pdf.setFont('times', 'bold');
-        pdf.text('Skills', left + 2, y);
+        pdf.text('Skills', left, y);
         y += LINE_HEIGHT;
         
-        // Technical skills
-        pdf.text('Technical:', left + 6, y);
-        const techSkillsText = data.others.skills.technical.join(', ');
-        const techSkillsLines = pdf.splitTextToSize(techSkillsText, 165 - pdf.getTextWidth('Technical: '));
-        
-        if (techSkillsLines.length === 1) {
-            pdf.setFont('times', 'normal');
-            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
-            y += LINE_HEIGHT;
-        } else {
-            // Handle multi-line technical skills
-            pdf.setFont('times', 'normal');
-            pdf.text(techSkillsLines[0], left + 6 + pdf.getTextWidth('Technical: '), y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < techSkillsLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(techSkillsLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
-        }
-        
-        // Professional skills
-        pdf.setFont('times', 'bold');
-        pdf.text('Professional:', left + 6, y);
-        const profSkillsText = data.others.skills.professional.join(', ');
-        const profSkillsLines = pdf.splitTextToSize(profSkillsText, 165 - pdf.getTextWidth('Professional: '));
-        
-        if (profSkillsLines.length === 1) {
-            pdf.setFont('times', 'normal');
-            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
-            y += LINE_HEIGHT;
-        } else {
-            pdf.setFont('times', 'normal');
-            pdf.text(profSkillsLines[0], left + 6 + pdf.getTextWidth('Professional: '), y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < profSkillsLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(profSkillsLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
-        }
-        
-        y += 2; // Add spacing before Languages
-        
-        // Languages section
-        y = checkPageBreak(pdf, y, LINE_HEIGHT * 4);
-        pdf.setFont('times', 'bold');
-        pdf.text('Languages:', left + 2, y);
+        pdf.text('Technical:', left + 4, y);
+        pdf.setFont('times', 'normal');
+        pdf.text(
+            data.others.skills.technical.join(', '),
+            left + 30,
+            y
+        );
         y += LINE_HEIGHT;
         
-        const languagesText = data.others.languages.map(l => `${l.name} (${l.level})`).join(', ');
-        const languagesLines = pdf.splitTextToSize(languagesText, 170 - pdf.getTextWidth('Languages: '));
+        pdf.setFont('times', 'bold');
+        pdf.text('Professional:', left + 4, y);
+        pdf.setFont('times', 'normal');
+        pdf.text(
+            data.others.skills.professional.join(', '),
+            left + 30,
+            y
+        );
+        y += ITEM_SPACING;
+        
+        pdf.setFont('times', 'bold');
+        pdf.text('Languages:', left, y);
+        y += LINE_HEIGHT;
         
         pdf.setFont('times', 'normal');
-        if (languagesLines.length === 1) {
-            pdf.text(languagesLines[0], left + 6, y);
-        } else {
-            pdf.text(languagesLines[0], left + 6, y);
-            y += LINE_HEIGHT;
-            
-            for (let i = 1; i < languagesLines.length; i++) {
-                y = checkPageBreak(pdf, y, LINE_HEIGHT);
-                pdf.text(languagesLines[i], left + 6, y);
-                y += LINE_HEIGHT;
-            }
-        }
+        pdf.text(
+            data.others.languages.map(l => `${l.name} (${l.level})`).join(', '),
+            left + 4,
+            y
+        );
             
         pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
