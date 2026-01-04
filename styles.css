@@ -6,16 +6,15 @@
     --success-color: #27ae60;
     --warning-color: #f39c12;
     --danger-color: #e74c3c;
-    --text-color: #333333;
-    --text-light: #666666;
-    --bg-color: #ffffff;
+    --json-color: #8e44ad;
+    --text-color: #333;
+    --text-light: #666;
+    --bg-color: #fff;
     --section-bg: #f8f9fa;
     --border-color: #e1e5e9;
-    --edit-border: #3498db;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
     --radius: 6px;
-    --radius-sm: 4px;
     --transition: all 0.2s ease;
 }
 
@@ -26,126 +25,181 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #f5f7fa;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
     padding: 20px;
-    padding-top: 80px; /* Space for admin controls */
 }
 
-/* ===== ADMIN CONTROLS ===== */
-.admin-controls {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+/* ===== JSON MANAGER ===== */
+.json-manager {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.json-controls {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--json-color);
+    color: white;
 }
 
-.admin-btn {
+.json-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.json-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.json-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border: none;
     border-radius: var(--radius);
-    font-family: inherit;
+    background: white;
+    color: var(--json-color);
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
     transition: var(--transition);
+}
+
+.json-btn:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
 
-.edit-toggle {
-    background: var(--secondary-color);
-    color: white;
-}
-
-.edit-toggle:hover {
-    background: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.admin-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    background: white;
-    padding: 15px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
-}
-
-.save-btn {
+.json-btn.save-file {
     background: var(--success-color);
     color: white;
 }
 
-.load-btn {
+.json-btn.load-file {
     background: var(--primary-color);
     color: white;
+    position: relative;
 }
 
-.export-btn {
-    background: var(--danger-color);
-    color: white;
-}
-
-.reset-btn {
+.json-btn.new-file {
     background: var(--warning-color);
     color: white;
 }
 
-.print-btn {
-    background: var(--text-light);
+.json-btn.edit-json {
+    background: var(--json-color);
+    color: white;
+    border: 2px solid white;
+}
+
+/* ===== JSON EDITOR ===== */
+.json-editor {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border-top: 1px solid #333;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #252526;
+    border-bottom: 1px solid #333;
+}
+
+.editor-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
     color: white;
 }
 
-.admin-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+.close-editor {
+    background: none;
+    border: none;
+    color: #d4d4d4;
+    font-size: 24px;
+    cursor: pointer;
+    transition: var(--transition);
 }
 
-.status-message {
-    background: white;
-    padding: 10px 15px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border-left: 4px solid var(--success-color);
+.close-editor:hover {
+    color: white;
+}
+
+#jsonTextarea {
+    width: 100%;
+    height: 400px;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border: none;
+    padding: 20px;
+    font-family: 'Consolas', 'Monaco', monospace;
     font-size: 14px;
-    display: none;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
 }
 
-.status-message.show {
-    display: block;
-    animation: fadeIn 0.3s ease;
+.editor-actions {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    background: #252526;
+    border-top: 1px solid #333;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.editor-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.editor-btn.apply {
+    background: var(--success-color);
+    color: white;
+}
+
+.editor-btn.format {
+    background: var(--json-color);
+    color: white;
+}
+
+.editor-btn.cancel {
+    background: #666;
+    color: white;
+}
+
+.editor-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 /* ===== RESUME CONTAINER ===== */
 .resume-container {
-    max-width: 1000px;
-    margin: 0 auto;
     background: var(--bg-color);
-    box-shadow: var(--shadow);
     border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
-    transition: var(--transition);
-}
-
-.edit-mode .resume-container {
-    box-shadow: 0 0 0 2px var(--edit-border);
 }
 
 /* ===== HEADER ===== */
@@ -184,6 +238,31 @@ body {
     font-size: 0.95rem;
 }
 
+.contact-info i {
+    width: 20px;
+    text-align: center;
+}
+
+/* ===== EDITABLE ELEMENTS ===== */
+.editable {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.editable:hover {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px dashed var(--secondary-color);
+}
+
+.editable:focus {
+    outline: none;
+    background: rgba(52, 152, 219, 0.15);
+    border: 1px solid var(--secondary-color);
+}
+
 /* ===== MAIN CONTENT ===== */
 .resume-content {
     display: grid;
@@ -208,6 +287,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .section-title {
@@ -217,7 +298,6 @@ body {
     padding-bottom: 10px;
     border-bottom: 2px solid var(--border-color);
     position: relative;
-    flex: 1;
 }
 
 .section-title::after {
@@ -230,70 +310,6 @@ body {
     background-color: var(--secondary-color);
 }
 
-/* ===== EDITABLE ELEMENTS ===== */
-.editable {
-    cursor: pointer;
-    padding: 2px 4px;
-    border-radius: var(--radius-sm);
-    transition: var(--transition);
-}
-
-.edit-mode .editable:hover {
-    background: rgba(52, 152, 219, 0.1);
-    outline: 2px solid var(--edit-border);
-}
-
-.editable-section {
-    cursor: pointer;
-}
-
-.edit-mode .editable-section:hover::after {
-    content: ' ✎';
-    font-size: 0.8em;
-    margin-left: 8px;
-    opacity: 0.7;
-}
-
-.editable-multi {
-    min-height: 60px;
-}
-
-.edit-mode .editable-multi:hover {
-    background: rgba(52, 152, 219, 0.05);
-    outline: 2px dashed var(--edit-border);
-}
-
-.editable-list {
-    position: relative;
-}
-
-.edit-mode .editable-list:hover::before {
-    content: 'Click items to edit, drag to reorder';
-    position: absolute;
-    top: -25px;
-    left: 0;
-    font-size: 12px;
-    color: var(--secondary-color);
-    background: white;
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
-}
-
-.editable-list-item {
-    cursor: pointer;
-}
-
-.edit-mode .editable-list-item:hover {
-    background: rgba(52, 152, 219, 0.1);
-    outline: 1px solid var(--edit-border);
-}
-
-.editable-group {
-    position: relative;
-}
-
-/* ===== ADD/DELETE BUTTONS ===== */
 .add-btn {
     background: var(--success-color);
     color: white;
@@ -302,7 +318,7 @@ body {
     border-radius: var(--radius);
     font-size: 14px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
     transition: var(--transition);
@@ -318,40 +334,21 @@ body {
     transform: translateY(-2px);
 }
 
-.edit-mode .add-btn {
-    display: flex !important;
-}
-
-.delete-btn {
-    background: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 6px 12px;
+/* ===== SUMMARY ===== */
+.summary-content {
+    background: var(--section-bg);
+    padding: 20px;
     border-radius: var(--radius);
-    font-size: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    opacity: 0.8;
-    transition: var(--transition);
+    border-left: 4px solid var(--secondary-color);
 }
 
-.delete-btn.small {
-    padding: 3px 6px;
-    font-size: 10px;
-    margin: 0;
-    margin-left: 10px;
+.summary-paragraph {
+    margin-bottom: 15px;
+    line-height: 1.7;
 }
 
-.delete-btn:hover {
-    opacity: 1;
-    transform: translateY(-1px);
-}
-
-.edit-mode .delete-btn {
-    display: flex !important;
+.summary-paragraph:last-child {
+    margin-bottom: 0;
 }
 
 /* ===== EXPERIENCE ===== */
@@ -366,11 +363,7 @@ body {
     padding: 25px;
     border-radius: var(--radius);
     border-left: 4px solid var(--secondary-color);
-    transition: var(--transition);
-}
-
-.edit-mode .experience-item {
-    padding-bottom: 45px;
+    position: relative;
 }
 
 .job-header {
@@ -406,7 +399,8 @@ body {
 
 .job-responsibilities {
     list-style: none;
-    padding-left: 0;
+    padding-left: 20px;
+    margin-bottom: 15px;
 }
 
 .job-responsibilities li {
@@ -432,11 +426,10 @@ body {
 }
 
 .skill-category {
-    position: relative;
-}
-
-.edit-mode .skill-category {
-    padding-bottom: 40px;
+    background: var(--section-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--success-color);
 }
 
 .skill-category h4 {
@@ -450,12 +443,13 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-bottom: 15px;
 }
 
 .skill-tag {
-    background: var(--section-bg);
-    padding: 8px 16px;
-    border-radius: var(--radius);
+    background: white;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 0.9rem;
     border: 1px solid var(--border-color);
     transition: var(--transition);
@@ -485,9 +479,6 @@ body {
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 /* ===== LANGUAGES ===== */
@@ -501,13 +492,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-color);
-    position: relative;
-}
-
-.language-item:last-child {
-    border-bottom: none;
+    padding: 10px;
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
 }
 
 .language-name {
@@ -528,13 +516,11 @@ body {
 }
 
 .education-item {
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
     position: relative;
-}
-
-.education-item:last-child {
-    border-bottom: none;
 }
 
 .education-item h4 {
@@ -564,6 +550,10 @@ body {
 }
 
 .personal-detail {
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
     position: relative;
 }
 
@@ -577,6 +567,59 @@ body {
     margin-right: 8px;
 }
 
+/* ===== ACTIONS ===== */
+.item-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--section-bg);
+    color: var(--text-color);
+}
+
+.action-btn:hover {
+    background: var(--border-color);
+    transform: translateY(-1px);
+}
+
+.action-btn.add-responsibility {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--secondary-color);
+}
+
+.action-btn.add-skill {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--success-color);
+}
+
+.delete-btn {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+    border: none;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    font-size: 11px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.delete-btn:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
 /* ===== DOWNLOAD SECTION ===== */
 .download-section {
     margin-top: 30px;
@@ -588,55 +631,36 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: var(--secondary-color);
+    background: var(--danger-color);
     color: white;
     padding: 12px 24px;
     border-radius: var(--radius);
-    text-decoration: none;
+    border: none;
     font-weight: 500;
     transition: var(--transition);
     width: 100%;
-    border: none;
     cursor: pointer;
     font-family: inherit;
     font-size: 16px;
 }
 
 .download-btn:hover {
-    background: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.data-controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.data-btn {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--section-bg);
-    color: var(--text-color);
-    padding: 10px 15px;
-    border-radius: var(--radius);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-.data-btn:hover {
-    background: white;
+    background: #c0392b;
     transform: translateY(-2px);
     box-shadow: var(--shadow);
+}
+
+.file-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--secondary-color);
+}
+
+.file-info i {
+    margin-right: 5px;
 }
 
 /* ===== FOOTER ===== */
@@ -655,184 +679,24 @@ body {
     opacity: 0.7;
 }
 
-/* ===== MODAL ===== */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition);
-}
-
-.modal.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: white;
-    width: 90%;
-    max-width: 500px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: var(--section-bg);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-header h3 {
-    margin: 0;
-    color: var(--primary-color);
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: var(--transition);
-}
-
-.modal-close:hover {
-    color: var(--danger-color);
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-#editTextarea {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    font-family: inherit;
-    font-size: 14px;
-    line-height: 1.5;
-    resize: vertical;
-    margin-bottom: 20px;
-}
-
-#editTextarea:focus {
-    outline: none;
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
-
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.modal-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: var(--radius);
-    font-family: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.modal-btn.save {
-    background: var(--success-color);
-    color: white;
-}
-
-.modal-btn.cancel {
-    background: var(--section-bg);
-    color: var(--text-color);
-}
-
-.modal-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-}
-
 /* ===== UTILITY CLASSES ===== */
 .hidden {
     display: none !important;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-light);
-    font-style: italic;
-    background: var(--section-bg);
-    border-radius: var(--radius);
-    border: 2px dashed var(--border-color);
-}
-
-.dragging {
-    opacity: 0.5;
-    transform: rotate(5deg);
-}
-
-/* ===== PRINT STYLES ===== */
-@media print {
-    .admin-controls,
-    .add-btn,
-    .delete-btn,
-    .download-section,
-    .data-controls,
-    .modal {
-        display: none !important;
-    }
-    
-    body {
-        padding: 0;
-        background: white;
-        padding-top: 0;
-    }
-    
-    .resume-container {
-        box-shadow: none;
-        max-width: 100%;
-    }
-    
-    .header {
-        padding: 30px;
-    }
-    
-    .resume-content {
-        padding: 30px;
-    }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     body {
         padding: 10px;
-        padding-top: 120px;
     }
     
-    .admin-controls {
-        top: 10px;
-        right: 10px;
-        left: 10px;
+    .json-controls {
+        flex-direction: column;
+        gap: 15px;
         align-items: stretch;
     }
     
-    .admin-actions {
-        flex-wrap: wrap;
+    .json-actions {
         justify-content: center;
     }
     
@@ -852,6 +716,11 @@ body {
     .skills-grid {
         grid-template-columns: 1fr;
     }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 @media (max-width: 480px) {
@@ -864,13 +733,8 @@ body {
         font-size: 0.9rem;
     }
     
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .add-btn {
-        align-self: flex-start;
+    .json-btn {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
