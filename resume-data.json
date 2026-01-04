@@ -4,9 +4,9 @@
     "title": "Front-End Developer",
     "email": "zainatif15403@gmail.com",
     "phone": "+92 3148501486",
-    "location": "Gujrat, Pakistan",
+    "location": "Gujrat, Pakistan"
   },
-  "summary": "Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specialized in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. Passionate about creating high-performance, accessible web applications with modern UI/UX principles. Strong focus on debugging, optimization, and delivering maintainable solutions.",
+  "summary": "Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specialized in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. Focused on creating high-performance, accessible web applications with modern UI/UX principles. Proficient in debugging, optimization, and delivering maintainable solutions.",
   "workExperience": [
     {
       "company": "Freelance Front-End Developer",
@@ -16,12 +16,12 @@
       "endDate": "Present",
       "responsibilities": [
         "Develop responsive and interactive web interfaces using TypeScript, HTML5, and CSS3",
-        "Implement modern UI designs with Tailwind CSS for consistent styling across platforms",
+        "Implement modern UI designs with Tailwind CSS for consistent styling",
         "Build performant web applications using Next.js framework",
-        "Debug and optimize existing user interfaces for improved performance and maintainability",
-        "Manage version control using Git & GitHub for collaborative development",
-        "Handle data integrations and processing using XML and JSON formats",
-        "Ensure cross-browser compatibility and mobile-responsive design implementation"
+        "Debug and optimize existing user interfaces for improved performance",
+        "Manage version control using Git & GitHub",
+        "Handle data integrations using XML and JSON formats",
+        "Ensure cross-browser compatibility and mobile-responsive design"
       ]
     }
   ],
@@ -31,24 +31,21 @@
       "HTML5",
       "CSS3/Tailwind CSS",
       "Next.js",
-      "React",
-      "Git & GitHub",
       "Responsive Web Design",
+      "Git & GitHub",
       "XML/JSON Data Handling",
-      "UI Debugging & Optimization",
-      "Cross-Browser Compatibility"
+      "UI Debugging & Optimization"
     ],
     "professional": [
       "Problem Solving",
       "Detail Oriented",
       "Solution Oriented",
       "Performance Optimization",
-      "Code Maintainability",
-      "Modern UI/UX Principles"
+      "Code Maintainability"
     ]
   },
   "languages": [
-    {"name": "English", "level": "Professional Working Proficiency"},
+    {"name": "English", "level": "Intermediate (B2)"},
     {"name": "Urdu", "level": "Native (C2)"}
   ],
   "education": [
@@ -61,18 +58,6 @@
       "degree": "SSC: General Science",
       "institution": "FDC Faisal, Karachi",
       "completionDate": "10/2022"
-    }
-  ],
-  "projects": [
-    {
-      "name": "Portfolio Website",
-      "technologies": ["Next.js", "TypeScript", "Tailwind CSS"],
-      "description": "Responsive portfolio showcasing front-end projects with optimized performance"
-    },
-    {
-      "name": "E-commerce UI",
-      "technologies": ["React", "Tailwind CSS", "JSON"],
-      "description": "Interactive product interface with responsive design and data integration"
     }
   ],
   "footer": {
