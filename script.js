@@ -142,6 +142,12 @@ function setupPDFDownload() {
         const left = 15;
         const right = 195;
         let y = 20;
+        
+        // Consistent spacing constants
+        const LINE_HEIGHT = 5; // Consistent line spacing for all content
+        const SECTION_SPACING = 10; // Space after section titles
+        const ITEM_SPACING = 8; // Space between items (jobs, education entries)
+        const BULLET_SPACING = 5; // Space between bullet points (now same as LINE_HEIGHT)
 
         // -------- HEADER --------
         pdf.setFont('times', 'bold');
@@ -160,21 +166,21 @@ function setupPDFDownload() {
 
         // -------- SUMMARY --------
         sectionTitle(pdf, 'SUMMARY', left, y);
-        y += 10; // Increased from 8 to 10 for more space
+        y += SECTION_SPACING;
         
         pdf.setFont('times', 'normal');
-        pdf.setFontSize(11); // 1. Changed font size to 11
-        y = addParagraph(pdf, data.summary, left, y, 180, 5); // Changed line height from 4 to 5
-        y += 10;
+        pdf.setFontSize(11);
+        y = addParagraph(pdf, data.summary, left, y, 180, LINE_HEIGHT);
+        y += ITEM_SPACING;
 
         // -------- EXPERIENCE --------
         sectionTitle(pdf, 'WORK EXPERIENCE', left, y);
-        y += 10;
+        y += SECTION_SPACING;
 
         data.workExperience.forEach(job => {
-            y = checkPageBreak(pdf, y);
+            y = checkPageBreak(pdf, y, LINE_HEIGHT * 10); // Reserve space for next job
 
-            // Line 1
+            // Line 1 - Company and Date
             pdf.setFont('times', 'bold');
             pdf.setFontSize(11);
             pdf.text(job.company, left, y);
@@ -184,39 +190,56 @@ function setupPDFDownload() {
                 y,
                 { align: 'right' }
             );
-            y += 5;
+            y += LINE_HEIGHT;
 
-            // Line 2
+            // Line 2 - Position and Location
             pdf.setFont('times', 'normal');
             pdf.text(job.position, left, y);
             pdf.text(job.location, right, y, { align: 'right' });
-            y += 5;
+            y += LINE_HEIGHT;
 
-            // Bullets - 4. Increased space between bullet points
+            // Bullets - Using consistent line spacing
             job.responsibilities.forEach(r => {
-                y = checkPageBreak(pdf, y);
-            
+                y = checkPageBreak(pdf, y, LINE_HEIGHT * 3); // Reserve space for bullet
+                
+                // Split text into multiple lines if needed
                 const lines = pdf.splitTextToSize(r, 170);
-            
+                
+                // Draw bullet point
                 pdf.text('•', left + 2, y);
-                pdf.text(lines, left + 6, y);
-            
-                // Increased from 4 to 6 for more space between bullets
-                y += lines.length * 6;
+                
+                // Draw text with consistent line spacing
+                if (lines.length === 1) {
+                    pdf.text(lines, left + 6, y);
+                    y += BULLET_SPACING;
+                } else {
+                    // For multi-line bullet points
+                    pdf.text(lines[0], left + 6, y);
+                    y += LINE_HEIGHT;
+                    
+                    // Additional lines (indented)
+                    for (let i = 1; i < lines.length; i++) {
+                        y = checkPageBreak(pdf, y, LINE_HEIGHT);
+                        pdf.text(lines[i], left + 6, y);
+                        y += LINE_HEIGHT;
+                    }
+                    y += (BULLET_SPACING - LINE_HEIGHT); // Adjust spacing after multi-line bullet
+                }
             });
 
-            y += 8;
+            y += ITEM_SPACING;
         });
 
         // -------- EDUCATION --------
         sectionTitle(pdf, 'EDUCATION', left, y);
-        y += 10;
+        y += SECTION_SPACING;
 
         data.education.forEach(edu => {
-            y = checkPageBreak(pdf, y);
+            y = checkPageBreak(pdf, y, LINE_HEIGHT * 3); // Reserve space for education entry
 
+            // Institution and Date
             pdf.setFont('times', 'bold');
-            pdf.setFontSize(11); // 3. Changed font size to 11
+            pdf.setFontSize(11);
             pdf.text(edu.institution, left, y);
             pdf.text(
                 edu.completionDate,
@@ -224,41 +247,43 @@ function setupPDFDownload() {
                 y,
                 { align: 'right' }
             );
-            y += 5;
+            y += LINE_HEIGHT;
 
+            // Degree
             pdf.setFont('times', 'normal');
-            pdf.setFontSize(11); // 3. Changed font size to 11
             pdf.text(edu.degree, left, y);
-            y += 8;
+            y += ITEM_SPACING;
         });
 
         // -------- OTHERS --------
         sectionTitle(pdf, 'OTHERS', left, y);
-        y += 10;
+        y += SECTION_SPACING;
         
         // Set font size for OTHERS section content
-        pdf.setFontSize(11); // 3. Changed font size to 11
+        pdf.setFont('times', 'normal');
+        pdf.setFontSize(11);
         
-        y = addBullet(
-            pdf,
-            'Skills:',
-            [...data.skills.technical, ...data.skills.professional].join(', '),
-            left,
-            y,
-            170,
-            5 // Increased line height from default 4 to 5
-        );
-        y += 2;
+        // Skills bullet
+        const skillsText = [...data.skills.technical, ...data.skills.professional].join(', ');
+        const skillsLines = pdf.splitTextToSize(skillsText, 170 - pdf.getTextWidth('Skills: '));
         
-        y = addBullet(
-            pdf,
-            'Languages:',
-            data.languages.map(l => `${l.name} (${l.level})`).join(', '),
-            left,
-            y,
-            170,
-            5 // Increased line height from default 4 to 5
-        );
+        pdf.text('•', left + 2, y);
+        pdf.setFont('times', 'bold');
+        pdf.text('Skills:', left + 6, y);
+        pdf.setFont('times', 'normal');
+        pdf.text(skillsLines, left + 6 + pdf.getTextWidth('Skills: '), y);
+        y += Math.max(skillsLines.length, 1) * LINE_HEIGHT;
+        
+        // Languages bullet
+        y += 2; // Small spacing between bullets
+        const languagesText = data.languages.map(l => `${l.name} (${l.level})`).join(', ');
+        const languagesLines = pdf.splitTextToSize(languagesText, 170 - pdf.getTextWidth('Languages: '));
+        
+        pdf.text('•', left + 2, y);
+        pdf.setFont('times', 'bold');
+        pdf.text('Languages:', left + 6, y);
+        pdf.setFont('times', 'normal');
+        pdf.text(languagesLines, left + 6 + pdf.getTextWidth('Languages: '), y);
             
         pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
@@ -283,33 +308,11 @@ function addParagraph(pdf, text, x, y, width, lh) {
     return y + lines.length * lh;
 }
 
-function addBullet(pdf, label, text, x, y, width, lh = 4) {
-    const bulletX = x + 2;
-    const textX = x + 6;
-
-    pdf.text('•', bulletX, y);
-
-    if (label) {
-        pdf.setFont('times', 'bold');
-        pdf.text(label, textX, y);
-        pdf.setFont('times', 'normal');
-
-        const labelWidth = pdf.getTextWidth(label + ' ');
-        const lines = pdf.splitTextToSize(text, width - labelWidth);
-        pdf.text(lines, textX + labelWidth, y);
-
-        return y + lines.length * lh;
-    } else {
-        const lines = pdf.splitTextToSize(text, width);
-        pdf.text(lines, textX, y);
-        return y + lines.length * lh;
-    }
-}
-
-function checkPageBreak(pdf, y) {
-    if (y > 270) {
+// Modified checkPageBreak to reserve space for upcoming content
+function checkPageBreak(pdf, y, reserveHeight = 0) {
+    if (y + reserveHeight > 270) { // A4 page height is 297mm, leaving margin
         pdf.addPage();
-        return 20;
+        return 20; // Return to top of new page
     }
     return y;
 }
