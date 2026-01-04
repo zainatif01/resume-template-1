@@ -3,24 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zain Atif - Professional Resume</title>
+    <title>Zain Atif - Interactive Resume</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Admin Controls -->
+    <div class="admin-controls" id="adminControls">
+        <button id="editToggle" class="admin-btn edit-toggle">
+            <i class="fas fa-edit"></i> Edit Resume
+        </button>
+        
+        <div class="admin-actions hidden" id="adminActions">
+            <button id="saveResume" class="admin-btn save-btn">
+                <i class="fas fa-save"></i> Save
+            </button>
+            <button id="loadResume" class="admin-btn load-btn">
+                <i class="fas fa-folder-open"></i> Load
+            </button>
+            <button id="exportPDF" class="admin-btn export-btn">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </button>
+            <button id="resetResume" class="admin-btn reset-btn">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+            <button id="printResume" class="admin-btn print-btn">
+                <i class="fas fa-print"></i> Print
+            </button>
+        </div>
+        
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
     <div class="resume-container">
         <!-- Header Section -->
         <header class="header">
             <div class="header-content">
                 <div class="name-title">
-                    <h1>Zain Atif</h1>
-                    <p class="subtitle">Front-End Web Developer</p>
+                    <h1 class="editable" data-field="name">Zain Atif</h1>
+                    <p class="subtitle editable" data-field="title">Web Developer & IT Professional</p>
                 </div>
                 <div class="contact-info">
-                    <p><i class="fas fa-envelope"></i> zainatif15403@gmail.com</p>
-                    <p><i class="fas fa-phone"></i> +92 3148501486</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Gujrat, Pakistan</p>
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        <span class="editable" data-field="email">zainatif15403@gmail.com</span>
+                    </p>
+                    <p>
+                        <i class="fas fa-phone"></i>
+                        <span class="editable" data-field="phone">+92 3148501486</span>
+                    </p>
+                    <p>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="editable" data-field="location">Karachi, Pakistan</span>
+                    </p>
                 </div>
             </div>
         </header>
@@ -29,49 +65,91 @@
             <div class="main-column">
                 <!-- Professional Summary -->
                 <section class="section">
-                    <h2 class="section-title">Professional Summary</h2>
-                    <p class="summary-text">
+                    <div class="section-header">
+                        <h2 class="section-title editable-section" data-field="summary-title">Professional Summary</h2>
+                        <button class="add-btn hidden" data-add="summary">
+                            <i class="fas fa-plus"></i> Add Paragraph
+                        </button>
+                    </div>
+                    <div class="summary-text editable-multi" data-field="summary">
                         Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.
-                    </p>
+                    </div>
                 </section>
 
                 <!-- Work History -->
                 <section class="section">
-                    <h2 class="section-title">Work History</h2>
-                    <div class="experience-item">
-                        <div class="job-header">
-                            <h3>Airmen Golf Club & Recreational Park</h3>
-                            <span class="job-date">12/2020 - 11/2021</span>
+                    <div class="section-header">
+                        <h2 class="section-title editable-section" data-field="experience-title">Work History</h2>
+                        <button class="add-btn hidden" data-add="experience">
+                            <i class="fas fa-plus"></i> Add Job
+                        </button>
+                    </div>
+                    
+                    <div class="experience-list" id="experienceList">
+                        <!-- Job 1 -->
+                        <div class="experience-item editable-group" data-index="0">
+                            <div class="job-header">
+                                <h3 class="editable" data-field="company-0">Airmen Golf Club & Recreational Park</h3>
+                                <span class="job-date">
+                                    <span class="editable" data-field="start-date-0">12/2020</span> - 
+                                    <span class="editable" data-field="end-date-0">11/2021</span>
+                                </span>
+                            </div>
+                            <p class="job-position">
+                                <span class="editable" data-field="position-0">Caddie</span> | 
+                                <span class="editable" data-field="location-0">Korangi Creek, Karachi</span>
+                            </p>
+                            <ul class="job-responsibilities editable-list" data-field="responsibilities-0">
+                                <li class="editable-list-item" data-item="0">Maintained smooth pace of play for golfers on course</li>
+                                <li class="editable-list-item" data-item="1">Carried two bags of clubs for full 18-hole rounds of golf</li>
+                            </ul>
+                            <button class="delete-btn hidden" data-delete="experience-0">
+                                <i class="fas fa-trash"></i> Remove Job
+                            </button>
                         </div>
-                        <p class="job-position">Caddie | Korangi Creek, Karachi</p>
-                        <ul class="job-responsibilities">
-                            <li>Maintained smooth pace of play for golfers on course</li>
-                            <li>Carried two bags of clubs for full 18-hole rounds of golf</li>
-                        </ul>
+                        
+                        <!-- Add more jobs here -->
+                    </div>
+                    
+                    <div class="empty-state hidden" id="emptyExperience">
+                        <p>No work experience added yet. Click "Add Job" to get started.</p>
                     </div>
                 </section>
 
                 <!-- Skills -->
                 <section class="section">
-                    <h2 class="section-title">Skills</h2>
+                    <div class="section-header">
+                        <h2 class="section-title editable-section" data-field="skills-title">Skills</h2>
+                        <button class="add-btn hidden" data-add="skill">
+                            <i class="fas fa-plus"></i> Add Skill
+                        </button>
+                    </div>
+                    
                     <div class="skills-grid">
-                        <div class="skill-category">
-                            <h4>Technical Skills</h4>
-                            <div class="skill-list">
-                                <span class="skill-tag">JavaScript</span>
-                                <span class="skill-tag">HTML5</span>
-                                <span class="skill-tag">CSS3</span>
-                                <span class="skill-tag">Databases</span>
+                        <div class="skill-category editable-group" data-index="0">
+                            <h4 class="editable" data-field="category-0">Technical Skills</h4>
+                            <div class="skill-list editable-list" data-field="skills-0">
+                                <span class="skill-tag editable-list-item" data-item="0">JavaScript</span>
+                                <span class="skill-tag editable-list-item" data-item="1">HTML5</span>
+                                <span class="skill-tag editable-list-item" data-item="2">CSS3</span>
+                                <span class="skill-tag editable-list-item" data-item="3">Databases</span>
                             </div>
+                            <button class="delete-btn hidden" data-delete="category-0">
+                                <i class="fas fa-trash"></i> Remove Category
+                            </button>
                         </div>
-                        <div class="skill-category">
-                            <h4>Professional Skills</h4>
-                            <div class="skill-list">
-                                <span class="skill-tag">Problem Solving</span>
-                                <span class="skill-tag">Communication</span>
-                                <span class="skill-tag">Customer Service</span>
-                                <span class="skill-tag">Time Management</span>
+                        
+                        <div class="skill-category editable-group" data-index="1">
+                            <h4 class="editable" data-field="category-1">Professional Skills</h4>
+                            <div class="skill-list editable-list" data-field="skills-1">
+                                <span class="skill-tag editable-list-item" data-item="0">Problem Solving</span>
+                                <span class="skill-tag editable-list-item" data-item="1">Communication</span>
+                                <span class="skill-tag editable-list-item" data-item="2">Customer Service</span>
+                                <span class="skill-tag editable-list-item" data-item="3">Time Management</span>
                             </div>
+                            <button class="delete-btn hidden" data-delete="category-1">
+                                <i class="fas fa-trash"></i> Remove Category
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -80,55 +158,215 @@
             <div class="sidebar">
                 <!-- Languages -->
                 <section class="sidebar-section">
-                    <h3 class="sidebar-title">Languages</h3>
-                    <div class="language-item">
-                        <span class="language-name">English</span>
-                        <span class="language-level">Intermediate (B2)</span>
+                    <div class="section-header">
+                        <h3 class="sidebar-title editable-section" data-field="languages-title">Languages</h3>
+                        <button class="add-btn small hidden" data-add="language">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
-                    <div class="language-item">
-                        <span class="language-name">Urdu</span>
-                        <span class="language-level">Native (C2)</span>
+                    
+                    <div class="language-list" id="languageList">
+                        <div class="language-item editable-group" data-index="0">
+                            <span class="language-name editable" data-field="language-0">Urdu</span>
+                            <span class="language-level editable" data-field="level-0">Native (C2)</span>
+                            <button class="delete-btn small hidden" data-delete="language-0">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="language-item editable-group" data-index="1">
+                            <span class="language-name editable" data-field="language-1">English</span>
+                            <span class="language-level editable" data-field="level-1">Upper Intermediate (B2)</span>
+                            <button class="delete-btn small hidden" data-delete="language-1">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="language-item editable-group" data-index="2">
+                            <span class="language-name editable" data-field="language-2">Punjabi</span>
+                            <span class="language-level editable" data-field="level-2">Upper Intermediate (B2)</span>
+                            <button class="delete-btn small hidden" data-delete="language-2">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Education -->
                 <section class="sidebar-section">
-                    <h3 class="sidebar-title">Education</h3>
-                    <div class="education-item">
-                        <h4>HSSC: Computer Science</h4>
-                        <p class="education-detail">FDC Faisal, Karachi</p>
-                        <p class="education-date">Expected: 06/2025</p>
+                    <div class="section-header">
+                        <h3 class="sidebar-title editable-section" data-field="education-title">Education</h3>
+                        <button class="add-btn small hidden" data-add="education">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
-                    <div class="education-item">
-                        <h4>SSC: General Science</h4>
-                        <p class="education-detail">FDC Faisal, Karachi</p>
-                        <p class="education-date">10/2022</p>
+                    
+                    <div class="education-list" id="educationList">
+                        <div class="education-item editable-group" data-index="0">
+                            <h4 class="editable" data-field="degree-0">HSSC: Computer Science</h4>
+                            <p class="education-detail editable" data-field="institution-0">FDC Faisal, Karachi</p>
+                            <p class="education-date">
+                                <span class="editable" data-field="edu-date-0">Expected: 06/2025</span>
+                            </p>
+                            <button class="delete-btn small hidden" data-delete="education-0">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="education-item editable-group" data-index="1">
+                            <h4 class="editable" data-field="degree-1">SSC: General Science</h4>
+                            <p class="education-detail editable" data-field="institution-1">FDC Faisal, Karachi</p>
+                            <p class="education-date">
+                                <span class="editable" data-field="edu-date-1">10/2022</span>
+                            </p>
+                            <button class="delete-btn small hidden" data-delete="education-1">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Personal Details -->
                 <section class="sidebar-section">
-                    <h3 class="sidebar-title">Personal Details</h3>
-                    <div class="personal-detail">
-                        <p><strong>Date of Birth:</strong> 12/10/2004</p>
-                        <p><strong>Location:</strong> Karachi, Pakistan</p>
+                    <div class="section-header">
+                        <h3 class="sidebar-title editable-section" data-field="personal-title">Personal Details</h3>
+                        <button class="add-btn small hidden" data-add="personal">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="personal-details editable-list" data-field="personal-details">
+                        <div class="personal-detail editable-group" data-index="0">
+                            <p>
+                                <strong class="editable" data-field="detail-label-0">Date of Birth:</strong>
+                                <span class="editable" data-field="detail-value-0">12/10/2004</span>
+                            </p>
+                            <button class="delete-btn small hidden" data-delete="personal-0">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="personal-detail editable-group" data-index="1">
+                            <p>
+                                <strong class="editable" data-field="detail-label-1">Location:</strong>
+                                <span class="editable" data-field="detail-value-1">Karachi, Pakistan</span>
+                            </p>
+                            <button class="delete-btn small hidden" data-delete="personal-1">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
-                <!-- Download Button -->
+                <!-- Download Section -->
                 <div class="download-section">
-                    <a href="Zain_Atif_Resume.pdf" class="download-btn" download>
-                        <i class="fas fa-download"></i> Download PDF Resume
-                    </a>
+                    <button id="generatePDF" class="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <div class="data-controls">
+                        <button id="exportData" class="data-btn export-data">
+                            <i class="fas fa-file-export"></i> Export Data
+                        </button>
+                        <label class="data-btn import-data">
+                            <i class="fas fa-file-import"></i> Import Data
+                            <input type="file" id="importFile" accept=".json" style="display: none;">
+                        </label>
+                    </div>
                 </div>
             </div>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>© 2024 Zain Atif. All rights reserved.</p>
+            <p>© <span id="currentYear"></span> <span class="editable" data-field="footer-name">Zain Atif</span>. Interactive Resume Builder.</p>
+            <p class="footer-note">Click "Edit Resume" to modify content directly on this page</p>
         </footer>
     </div>
+
+    <!-- Edit Modal -->
+    <div class="modal hidden" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Content</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="editTextarea" rows="6" placeholder="Enter content..."></textarea>
+                <div class="modal-actions">
+                    <button id="saveEdit" class="modal-btn save">Save Changes</button>
+                    <button id="cancelEdit" class="modal-btn cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates (Hidden) -->
+    <template id="jobTemplate">
+        <div class="experience-item editable-group" data-index="">
+            <div class="job-header">
+                <h3 class="editable" data-field="company-">New Company</h3>
+                <span class="job-date">
+                    <span class="editable" data-field="start-date-">MM/YYYY</span> - 
+                    <span class="editable" data-field="end-date-">MM/YYYY</span>
+                </span>
+            </div>
+            <p class="job-position">
+                <span class="editable" data-field="position-">Position</span> | 
+                <span class="editable" data-field="location-">Location</span>
+            </p>
+            <ul class="job-responsibilities editable-list" data-field="responsibilities-">
+                <li class="editable-list-item" data-item="0">Responsibility 1</li>
+            </ul>
+            <button class="delete-btn hidden" data-delete="experience-">
+                <i class="fas fa-trash"></i> Remove Job
+            </button>
+        </div>
+    </template>
+
+    <template id="skillCategoryTemplate">
+        <div class="skill-category editable-group" data-index="">
+            <h4 class="editable" data-field="category-">New Category</h4>
+            <div class="skill-list editable-list" data-field="skills-">
+                <span class="skill-tag editable-list-item" data-item="0">New Skill</span>
+            </div>
+            <button class="delete-btn hidden" data-delete="category-">
+                <i class="fas fa-trash"></i> Remove Category
+            </button>
+        </div>
+    </template>
+
+    <template id="languageTemplate">
+        <div class="language-item editable-group" data-index="">
+            <span class="language-name editable" data-field="language-">Language</span>
+            <span class="language-level editable" data-field="level-">Proficiency Level</span>
+            <button class="delete-btn small hidden" data-delete="language-">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </template>
+
+    <template id="educationTemplate">
+        <div class="education-item editable-group" data-index="">
+            <h4 class="editable" data-field="degree-">Degree/Certificate</h4>
+            <p class="education-detail editable" data-field="institution-">Institution</p>
+            <p class="education-date">
+                <span class="editable" data-field="edu-date-">Date/Year</span>
+            </p>
+            <button class="delete-btn small hidden" data-delete="education-">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </template>
+
+    <template id="personalDetailTemplate">
+        <div class="personal-detail editable-group" data-index="">
+            <p>
+                <strong class="editable" data-field="detail-label-">Label:</strong>
+                <span class="editable" data-field="detail-value-">Value</span>
+            </p>
+            <button class="delete-btn small hidden" data-delete="personal-">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </template>
 
     <script src="script.js"></script>
 </body>
