@@ -12,9 +12,9 @@
     {
       "company": "TechNova Solutions Inc.",
       "position": "Front-End Developer",
-      "location": "San Francisco, CA (Remote)",
-      "startDate": "08/2023",
-      "endDate": "02/2024",
+      "location": "San Francisco, CA",
+      "startDate": "Aug 2023",
+      "endDate": "Feb 2024",
       "responsibilities":
        [ "Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform",
         "Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%",
@@ -23,7 +23,7 @@
     {
       "company": "DigitalFlow Agency",
       "position": "Junior Front-End Developer",
-      "location": "New York, NY (Remote)",
+      "location": "New York, NY",
       "startDate": "01/2023",
       "endDate": "04/2023",
       "responsibilities":
