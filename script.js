@@ -147,7 +147,6 @@ function setupPDFDownload() {
         const LINE_HEIGHT = 5; // Consistent line spacing for all content
         const SECTION_SPACING = 10; // Space after section titles
         const ITEM_SPACING = 8; // Space between items (jobs, education entries)
-        const BULLET_SPACING = 5; // Space between bullet points (now same as LINE_HEIGHT)
 
         // -------- HEADER --------
         pdf.setFont('times', 'bold');
@@ -170,7 +169,13 @@ function setupPDFDownload() {
         
         pdf.setFont('times', 'normal');
         pdf.setFontSize(11);
-        y = addParagraph(pdf, data.summary, left, y, 180, LINE_HEIGHT);
+        
+        // Fix: Use proper line spacing for summary paragraph
+        const summaryLines = pdf.splitTextToSize(data.summary, 180);
+        summaryLines.forEach((line, index) => {
+            pdf.text(line, left, y);
+            y += LINE_HEIGHT;
+        });
         y += ITEM_SPACING;
 
         // -------- EXPERIENCE --------
@@ -210,8 +215,8 @@ function setupPDFDownload() {
                 
                 // Draw text with consistent line spacing
                 if (lines.length === 1) {
-                    pdf.text(lines, left + 6, y);
-                    y += BULLET_SPACING;
+                    pdf.text(lines[0], left + 6, y);
+                    y += LINE_HEIGHT;
                 } else {
                     // For multi-line bullet points
                     pdf.text(lines[0], left + 6, y);
@@ -223,13 +228,15 @@ function setupPDFDownload() {
                         pdf.text(lines[i], left + 6, y);
                         y += LINE_HEIGHT;
                     }
-                    y += (BULLET_SPACING - LINE_HEIGHT); // Adjust spacing after multi-line bullet
                 }
             });
 
             y += ITEM_SPACING;
         });
 
+        // Fix 2: Apply SECTION_SPACING before EDUCATION
+        y += SECTION_SPACING - ITEM_SPACING; // Adjust since last job added ITEM_SPACING
+        
         // -------- EDUCATION --------
         sectionTitle(pdf, 'EDUCATION', left, y);
         y += SECTION_SPACING;
@@ -255,6 +262,9 @@ function setupPDFDownload() {
             y += ITEM_SPACING;
         });
 
+        // Fix 2: Apply SECTION_SPACING before OTHERS
+        y += SECTION_SPACING - ITEM_SPACING; // Adjust since last education entry added ITEM_SPACING
+        
         // -------- OTHERS --------
         sectionTitle(pdf, 'OTHERS', left, y);
         y += SECTION_SPACING;
