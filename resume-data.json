@@ -1,7 +1,7 @@
 {
   "personal": {
     "name": "Zain Atif",
-    "title": "Front-End Web2 Developer",
+    "title": "Front-End Developer",
     "email": "zainatif15403@gmail.com",
     "phone": "+92 3148501486",
     "location": "Gujrat, Pakistan",
@@ -10,6 +10,16 @@
   "summary": "Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.",
   "workExperience": [
     
+    {
+      "company": "Airmen Golf Club & Recreational Park",
+      "position": "Caddie",
+      "location": "Korangi Creek, Karachi",
+      "startDate": "12/2020",
+      "endDate": "11/2021",
+      "responsibilities": 
+      ["Maintained smooth pace of play for golfers on course",
+        "Carried two bags of clubs for full 18-hole rounds of golf"]
+    },
     {
       "company": "Airmen Golf Club & Recreational Park",
       "position": "Caddie",
