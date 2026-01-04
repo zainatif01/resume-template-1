@@ -1,13 +1,11 @@
-// Using a version number we increment with each update
-const DATA_VERSION = "1.2";
-
 // Function to load and parse the JSON data
 async function loadResumeData() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const resumeContainer = document.getElementById('resume-content');
 
     try {
-        const response = await fetch(`resume-data.json?v=${DATA_VERSION}`);
+        const version = Date.now();
+        const response = await fetch(`resume-data.json?version=${version}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
