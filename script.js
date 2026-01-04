@@ -74,8 +74,8 @@ function renderResume(data) {
     // Footer
     document.getElementById('footer-text').textContent = data.footer.copyright;
     
-    // Setup download button after resume is rendered
-    setTimeout(setupDownloadButton, 100);
+    // Setup PDF download button after resume is rendered
+    setTimeout(setupPDFDownload, 100);
 }
 
 // Function to render work experience
@@ -142,105 +142,163 @@ function renderEducation(education) {
     `).join('');
 }
 
-// Simplified PDF generation function
-async function generatePDF() {
-    console.log('Generating PDF...'); // Debug log
-    
-    const downloadBtn = document.getElementById('download-pdf-btn');
-    const originalHTML = downloadBtn.innerHTML;
-    
-    try {
-        // Update button to show loading state
-        downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
-        downloadBtn.disabled = true;
-        
-        // Get the resume element
-        const element = document.getElementById('resume-content');
-        
-        // Use html2canvas with optimized settings
-        const canvas = await html2canvas(element, {
-            scale: 2, // Higher resolution
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-            onclone: function(clonedDoc) {
-                // Hide the download button in the cloned version
-                const clonedDownloadBtn = clonedDoc.querySelector('.download-btn');
-                if (clonedDownloadBtn) {
-                    clonedDownloadBtn.style.display = 'none';
-                }
-            }
-        });
-        
-        // Create PDF with jsPDF
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        // Calculate dimensions
-        const imgWidth = 190; // A4 width (210mm) minus 20mm margins
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        
-        // Add image to PDF
-        const imgData = canvas.toDataURL('image/png');
-        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-        
-        // Add footer
-        const date = new Date().toLocaleDateString();
-        pdf.setFontSize(10);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text(`Generated on ${date}`, 105, 285, { align: 'center' });
-        
-        // Save PDF
-        const name = document.getElementById('resume-name').textContent || 'resume';
-        const filename = name.replace(/\s+/g, '_').toLowerCase() + '_resume.pdf';
-        pdf.save(filename);
-        
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        alert('Failed to generate PDF. Please try again.');
-    } finally {
-        // Restore button state
-        downloadBtn.innerHTML = originalHTML;
-        downloadBtn.disabled = false;
-    }
-}
-
-// Setup download button functionality - SIMPLIFIED VERSION
-function setupDownloadButton() {
+// PDF Download Functionality
+function setupPDFDownload() {
     const downloadBtn = document.getElementById('download-pdf-btn');
     
     if (!downloadBtn) {
-        console.error('Download button not found!');
+        console.log('Download button not found, retrying in 1 second...');
+        setTimeout(setupPDFDownload, 1000);
         return;
     }
     
-    console.log('Setting up download button...'); // Debug log
-    
-    // Remove any existing event listeners
-    const newBtn = downloadBtn.cloneNode(true);
-    downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-    
-    // Add click event
-    newBtn.addEventListener('click', async function(e) {
-        e.preventDefault();
-        console.log('Button clicked!'); // Debug log
-        await generatePDF();
+    downloadBtn.addEventListener('click', async function() {
+        console.log('PDF generation started...');
+        
+        // Show loading state
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        this.disabled = true;
+        
+        try {
+            const element = document.getElementById('resume-content');
+            
+            // Create canvas with optimized settings
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                logging: false,
+                allowTaint: true,
+                onclone: function(clonedDoc) {
+                    // Hide the download button in the cloned version
+                    const clonedDownloadBtn = clonedDoc.querySelector('.download-btn');
+                    if (clonedDownloadBtn) {
+                        clonedDownloadBtn.style.display = 'none';
+                    }
+                    
+                    // Ensure all fonts are loaded
+                    const style = clonedDoc.createElement('style');
+                    style.innerHTML = `
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+                        * {
+                            font-family: 'Inter', sans-serif !important;
+                        }
+                    `;
+                    clonedDoc.head.appendChild(style);
+                }
+            });
+            
+            // Create PDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            // Calculate image dimensions to fit A4 page
+            const imgWidth = 190; // A4 width (210mm) minus 20mm margins
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Add image to PDF (centered horizontally)
+            const xPos = 10; // 10mm left margin
+            const yPos = 10; // 10mm top margin
+            pdf.addImage(imgData, 'PNG', xPos, yPos, imgWidth, imgHeight);
+            
+            // Add footer with generation date
+            const date = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            pdf.setFontSize(9);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(`Generated on ${date}`, 105, 290, { align: 'center' });
+            
+            // Save PDF with personalized filename
+            const name = document.getElementById('resume-name').textContent || 'resume';
+            const cleanName = name.replace(/\s+/g, '_').replace(/[^\w\s-]/g, '');
+            const filename = `${cleanName}_Resume.pdf`;
+            
+            pdf.save(filename);
+            
+            console.log('PDF generated successfully');
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error generating PDF. Please check console for details.');
+        } finally {
+            // Restore button
+            this.innerHTML = originalText;
+            this.disabled = false;
+        }
     });
     
-    console.log('Download button setup complete'); // Debug log
+    console.log('PDF download button setup complete');
 }
 
 // Initialize the resume when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, starting resume load...');
-    loadResumeData();
-});
+document.addEventListener('DOMContentLoaded', loadResumeData);
+
+// Optional: Add function to update JSON from a form (for advanced use)
+function updateResumeData(newData) {
+    // This function could be expanded to save data back to JSON
+    // Note: This requires server-side implementation for actual saving
+    console.log('Data updated (simulated):', newData);
+    renderResume(newData);
+}
+
+// Optional: Add a print-friendly version button
+function addPrintButton() {
+    const downloadSection = document.querySelector('.download-section');
+    if (downloadSection && !document.querySelector('#print-btn')) {
+        const printBtn = document.createElement('button');
+        printBtn.id = 'print-btn';
+        printBtn.className = 'print-btn';
+        printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
+        printBtn.style.marginTop = '10px';
+        printBtn.style.width = '100%';
+        printBtn.style.padding = '0.75rem 1.5rem';
+        printBtn.style.background = '#666';
+        printBtn.style.color = 'white';
+        printBtn.style.border = 'none';
+        printBtn.style.borderRadius = '6px';
+        printBtn.style.cursor = 'pointer';
+        printBtn.style.fontWeight = '500';
+        printBtn.style.transition = 'all 0.2s ease';
+        
+        printBtn.addEventListener('mouseenter', () => {
+            printBtn.style.background = '#555';
+            printBtn.style.transform = 'translateY(-2px)';
+        });
+        
+        printBtn.addEventListener('mouseleave', () => {
+            printBtn.style.background = '#666';
+            printBtn.style.transform = 'translateY(0)';
+        });
+        
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+        
+        downloadSection.appendChild(printBtn);
+    }
+}
+
+// Add print button when resume is loaded
+setTimeout(addPrintButton, 2000);
 
 // Debug: Check if libraries are loaded
 window.addEventListener('load', function() {
-    console.log('Window loaded');
+    console.log('Window loaded - Checking libraries...');
     console.log('html2canvas available:', typeof html2canvas !== 'undefined');
     console.log('jsPDF available:', typeof window.jspdf !== 'undefined');
+    
+    // Verify download button exists
+    const downloadBtn = document.getElementById('download-pdf-btn');
+    console.log('Download button found:', !!downloadBtn);
+    
+    // If download button exists but setupPDFDownload hasn't run yet, set it up
+    if (downloadBtn && !downloadBtn.hasAttribute('data-pdf-setup')) {
+        downloadBtn.setAttribute('data-pdf-setup', 'true');
+        console.log('Manually setting up PDF download...');
+    }
 });
