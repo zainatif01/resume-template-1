@@ -36,8 +36,11 @@ async function loadResumeData() {
 // Function to render all resume data
 function renderResume(data) {
     // Personal Information
+    const fullName = data.personal.name;
     document.getElementById('resume-name').textContent = data.personal.name;
     document.getElementById('resume-title').textContent = data.personal.title;
+    // Page title
+    document.getElementById('page-title').textContent = `${fullName} - Resume`;
     
     // Contact Info
     const contactInfo = document.getElementById('contact-info');
