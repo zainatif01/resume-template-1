@@ -149,7 +149,7 @@ function setupPDFDownload() {
         // Consistent spacing constants
         const LINE_HEIGHT = 5; // Consistent line spacing for all content
         const SECTION_SPACING = 10; // Space after section titles
-        const ITEM_SPACING = 8; // Space between items (jobs, education entries)
+        const ITEM_SPACING = 0; // Space between items (jobs, education entries)
 
         // -------- HEADER --------
         pdf.setFont('times', 'bold');
