@@ -133,6 +133,11 @@ body {
     padding: var(--spacing-md);
     border-radius: var(--radius);
     border-left: 4px solid var(--secondary-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.experience-item:last-child {
+    margin-bottom: 0;
 }
 
 .job-header {
