@@ -1,123 +1,72 @@
-// DOM Elements
-const themeToggle = document.getElementById('themeToggle');
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.querySelector('.nav-menu');
-const currentYearSpan = document.getElementById('currentYear');
-
-// Set current year in footer
-if (currentYearSpan) {
-    currentYearSpan.textContent = new Date().getFullYear();
-}
-
-// Theme Toggle
-themeToggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    
-    // Update icon
-    const icon = themeToggle.querySelector('i');
-    icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    
-    // Save preference to localStorage
-    localStorage.setItem('theme', newTheme);
-});
-
-// Mobile Menu Toggle
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
-
-// Close mobile menu when clicking a link
-document.querySelectorAll('.nav-menu a').forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-    });
-});
-
-// Initialize theme from localStorage or prefer-color-scheme
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        const icon = themeToggle.querySelector('i');
-        icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    } else if (prefersDark) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        const icon = themeToggle.querySelector('i');
-        icon.className = 'fas fa-sun';
+// Simple JavaScript for interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Current year in footer
+    const footerYear = document.querySelector('.footer p');
+    if (footerYear && footerYear.textContent.includes('2024')) {
+        const currentYear = new Date().getFullYear();
+        footerYear.innerHTML = footerYear.innerHTML.replace('2024', currentYear);
     }
-}
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        if (this.getAttribute('href') === '#') return;
-        
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            window.scrollTo({
-                top: targetElement.offsetTop - 80,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Print button functionality
-document.addEventListener('DOMContentLoaded', () => {
-    // Add print button dynamically
+    
+    // Print functionality
     const printBtn = document.createElement('button');
-    printBtn.className = 'btn btn-secondary print-btn';
     printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
-    printBtn.style.marginLeft = '10px';
+    printBtn.className = 'print-btn';
+    printBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    `;
+    
     printBtn.onclick = () => window.print();
+    document.body.appendChild(printBtn);
     
-    const headerActions = document.querySelector('.header-actions');
-    if (headerActions) {
-        headerActions.appendChild(printBtn);
-    }
-    
-    // Initialize theme
-    initializeTheme();
-    
-    // Add scroll effect to navbar
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-        } else {
-            navbar.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+    // Hide print button when printing
+    const style = document.createElement('style');
+    style.textContent = `
+        @media print {
+            .print-btn { display: none !important; }
         }
-    });
-});
-
-// Job entry hover effect
-document.querySelectorAll('.job-entry').forEach(entry => {
-    entry.addEventListener('mouseenter', () => {
-        entry.style.transform = 'translateY(-5px)';
+    `;
+    document.head.appendChild(style);
+    
+    // Smooth hover effects
+    const skillTags = document.querySelectorAll('.skill-tag');
+    skillTags.forEach(tag => {
+        tag.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+        });
+        
+        tag.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
     
-    entry.addEventListener('mouseleave', () => {
-        entry.style.transform = 'translateY(0)';
-    });
-});
-
-// Tech tag animation
-document.querySelectorAll('.tech-tag, .skill-tag').forEach(tag => {
-    tag.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.05)';
-    });
-    
-    tag.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
+    // Add subtle animation to job items
+    const jobItems = document.querySelectorAll('.experience-item');
+    jobItems.forEach(item => {
+        item.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+        
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+            this.style.boxShadow = 'none';
+        });
     });
 });
