@@ -181,7 +181,7 @@ function setupPDFDownload() {
             pdf.setFontSize(11);
             pdf.text(job.company, left, y);
             pdf.text(
-                `${formatDate(job.startDate)} – ${formatDate(job.endDate)}`,
+                `${job.startDate} – ${job.endDate}`,
                 right,
                 y,
                 { align: 'right' }
@@ -215,7 +215,7 @@ function setupPDFDownload() {
             pdf.setFont('times', 'bold');
             pdf.text(edu.institution, left, y);
             pdf.text(
-                formatDate(edu.completionDate),
+                edu.completionDate,
                 right,
                 y,
                 { align: 'right' }
