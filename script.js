@@ -1,15 +1,34 @@
 // Function to load and parse the JSON data
 async function loadResumeData() {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const resumeContainer = document.getElementById('resume-content');
+
     try {
         const response = await fetch('resume-data.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const resumeData = await response.json();
+        
         renderResume(resumeData);
+        
+        // Hide loading with fade out
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            resumeContainer.style.opacity = '1';
+            resumeContainer.style.transition = 'opacity 0.8s ease';
+        }, 600); // match transition duration
     } catch (error) {
         console.error('Error loading resume data:', error);
         document.getElementById('resume-name').textContent = 'Error loading resume';
+        
+        // Still hide loading even if error occurs
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+            resumeContainer.style.opacity = '1';
+        }, 600);
     }
 }
 
