@@ -76,6 +76,9 @@ function renderResume(data) {
     
     // Setup PDF download button after resume is rendered
     setTimeout(setupPDFDownload, 100);
+    
+    // Add print button after resume is rendered
+    setTimeout(addPrintButton, 200);
 }
 
 // Function to render work experience
@@ -177,6 +180,12 @@ function setupPDFDownload() {
                         clonedDownloadBtn.style.display = 'none';
                     }
                     
+                    // Hide the print button in the cloned version
+                    const clonedPrintBtn = clonedDoc.querySelector('.print-btn');
+                    if (clonedPrintBtn) {
+                        clonedPrintBtn.style.display = 'none';
+                    }
+                    
                     // Ensure all fonts are loaded
                     const style = clonedDoc.createElement('style');
                     style.innerHTML = `
@@ -235,6 +244,185 @@ function setupPDFDownload() {
     console.log('PDF download button setup complete');
 }
 
+// Print button with improved print handling
+function addPrintButton() {
+    const downloadSection = document.querySelector('.download-section');
+    if (downloadSection && !document.querySelector('#print-btn')) {
+        const printBtn = document.createElement('button');
+        printBtn.id = 'print-btn';
+        printBtn.className = 'print-btn';
+        printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
+        
+        printBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            printResume();
+        });
+        
+        downloadSection.appendChild(printBtn);
+        console.log('Print button added');
+    }
+}
+
+// Improved print function
+function printResume() {
+    console.log('Printing resume...');
+    
+    const originalButton = document.getElementById('print-btn');
+    const originalButtonHTML = originalButton.innerHTML;
+    
+    try {
+        // Show loading state
+        originalButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+        originalButton.disabled = true;
+        
+        // Get the resume content
+        const resumeContent = document.getElementById('resume-content').innerHTML;
+        
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        
+        if (!printWindow) {
+            throw new Error('Popup blocked. Please allow popups for this site to print.');
+        }
+        
+        // Create print-optimized HTML
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Resume - Print</title>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                <style>
+                    /* Reset for print */
+                    @page {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        size: A4 portrait;
+                    }
+                    
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        font-family: 'Inter', sans-serif !important;
+                        background: white !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                        width: 210mm !important;
+                        min-height: 297mm !important;
+                    }
+                    
+                    /* Hide non-print elements */
+                    .download-section,
+                    .print-btn,
+                    .download-btn {
+                        display: none !important;
+                    }
+                    
+                    /* Resume container styles */
+                    .resume-container {
+                        width: 210mm !important;
+                        min-height: 297mm !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        box-shadow: none !important;
+                        border-radius: 0 !important;
+                        background: white !important;
+                    }
+                    
+                    .header {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
+                    }
+                    
+                    .resume-content {
+                        padding: 20px !important;
+                    }
+                    
+                    /* Page break control */
+                    .section, .experience-item, .sidebar-section {
+                        break-inside: avoid !important;
+                        page-break-inside: avoid !important;
+                    }
+                    
+                    /* Ensure colors print */
+                    .skill-tag,
+                    .job-date {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                    }
+                    
+                    /* Print-specific overrides */
+                    @media print {
+                        body {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+                        
+                        /* Remove any browser-added headers/footers */
+                        @page {
+                            margin: 0 !important;
+                            size: A4;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                ${resumeContent}
+                <script>
+                    // Auto-print and close when ready
+                    window.onload = function() {
+                        // Small delay to ensure styles are applied
+                        setTimeout(function() {
+                            window.print();
+                            
+                            // Close window after printing
+                            setTimeout(function() {
+                                window.close();
+                            }, 1000);
+                        }, 500);
+                    };
+                    
+                    // Fallback in case print dialog is cancelled
+                    window.onafterprint = function() {
+                        setTimeout(function() {
+                            window.close();
+                        }, 500);
+                    };
+                <\/script>
+            </body>
+            </html>
+        `);
+        
+        printWindow.document.close();
+        
+        console.log('Print window opened successfully');
+        
+    } catch (error) {
+        console.error('Error printing resume:', error);
+        alert('Error printing: ' + error.message);
+        
+        // Fallback to basic print if new window fails
+        setTimeout(() => {
+            window.print();
+        }, 100);
+        
+    } finally {
+        // Restore button state
+        if (originalButton) {
+            setTimeout(() => {
+                originalButton.innerHTML = originalButtonHTML;
+                originalButton.disabled = false;
+            }, 2000);
+        }
+    }
+}
+
 // Initialize the resume when the page loads
 document.addEventListener('DOMContentLoaded', loadResumeData);
 
@@ -245,46 +433,6 @@ function updateResumeData(newData) {
     console.log('Data updated (simulated):', newData);
     renderResume(newData);
 }
-
-// Optional: Add a print-friendly version button
-function addPrintButton() {
-    const downloadSection = document.querySelector('.download-section');
-    if (downloadSection && !document.querySelector('#print-btn')) {
-        const printBtn = document.createElement('button');
-        printBtn.id = 'print-btn';
-        printBtn.className = 'print-btn';
-        printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
-        printBtn.style.marginTop = '10px';
-        printBtn.style.width = '100%';
-        printBtn.style.padding = '0.75rem 1.5rem';
-        printBtn.style.background = '#666';
-        printBtn.style.color = 'white';
-        printBtn.style.border = 'none';
-        printBtn.style.borderRadius = '6px';
-        printBtn.style.cursor = 'pointer';
-        printBtn.style.fontWeight = '500';
-        printBtn.style.transition = 'all 0.2s ease';
-        
-        printBtn.addEventListener('mouseenter', () => {
-            printBtn.style.background = '#555';
-            printBtn.style.transform = 'translateY(-2px)';
-        });
-        
-        printBtn.addEventListener('mouseleave', () => {
-            printBtn.style.background = '#666';
-            printBtn.style.transform = 'translateY(0)';
-        });
-        
-        printBtn.addEventListener('click', () => {
-            window.print();
-        });
-        
-        downloadSection.appendChild(printBtn);
-    }
-}
-
-// Add print button when resume is loaded
-setTimeout(addPrintButton, 2000);
 
 // Debug: Check if libraries are loaded
 window.addEventListener('load', function() {
