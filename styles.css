@@ -191,39 +191,36 @@ body {
     left: 0;
 }
 
-/* ===== SKILLS ===== */
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-md);
+/* ===== EDUCATION IN MAIN COLUMN ===== */
+.education-item {
+    background: var(--section-bg);
+    padding: var(--spacing-md);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--secondary-color);
+    margin-bottom: var(--spacing-md);
 }
 
-.skill-category h4 {
+.education-item:last-child {
+    margin-bottom: 0;
+}
+
+.education-item h4 {
     font-size: 1.1rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.25rem;
     color: var(--primary-color);
     font-weight: 600;
 }
 
-.skill-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+.education-detail {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
 }
 
-.skill-tag {
-    background: var(--section-bg);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    font-size: 0.9rem;
-    border: 1px solid var(--border-color);
-    transition: all 0.2s ease;
-}
-
-.skill-tag:hover {
-    background: var(--secondary-color);
-    color: white;
-    transform: translateY(-2px);
+.education-date {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    font-weight: 500;
 }
 
 /* ===== SIDEBAR ===== */
@@ -246,59 +243,90 @@ body {
     font-weight: 600;
 }
 
-/* ===== LANGUAGES ===== */
-.language-item {
+/* ===== OTHERS SECTION ===== */
+.others-content {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
+    flex-direction: column;
+    gap: var(--spacing-md);
 }
 
-.language-item:last-child {
-    border-bottom: none;
-}
-
-.language-name {
-    font-weight: 500;
-}
-
-.language-level {
-    color: var(--secondary-color);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-/* ===== EDUCATION ===== */
-.education-item {
+.others-category {
     margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
 }
 
-.education-item:last-child {
-    border-bottom: none;
+.others-category:last-child {
     margin-bottom: 0;
-    padding-bottom: 0;
 }
 
-.education-item h4 {
+.others-category h4 {
     font-size: 1rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-sm);
     color: var(--primary-color);
     font-weight: 600;
 }
 
-.education-detail {
+.others-category h5 {
     font-size: 0.95rem;
     color: var(--text-light);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
-.education-date {
-    font-size: 0.85rem;
-    color: var(--secondary-color);
+.skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.skill-list:last-child {
+    margin-bottom: 0;
+}
+
+.skill-tag {
+    background: var(--bg-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.skill-tag:hover {
+    background: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ===== LANGUAGES ===== */
+.languages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.language-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--bg-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.language-name {
     font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.language-level {
+    color: var(--secondary-color);
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: rgba(52, 152, 219, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
 }
 
 /* ===== PERSONAL DETAILS ===== */
@@ -433,12 +461,12 @@ body {
         gap: var(--spacing-md);
     }
     
-    .skills-grid {
-        grid-template-columns: 1fr;
-    }
-    
     .sidebar {
         padding: var(--spacing-md);
+    }
+    
+    .education-item {
+        padding: var(--spacing-sm);
     }
 }
 
@@ -463,6 +491,10 @@ body {
     
     .subtitle {
         font-size: 1.1rem;
+    }
+    
+    .skill-list {
+        justify-content: center;
     }
 }
 
@@ -593,16 +625,31 @@ body {
         color: #000;
     }
 
-    /* SKILLS */
-    .skills-grid {
-        display: block;
-    }
-
-    .skill-tag {
+    /* EDUCATION */
+    .education-item {
+        background: none;
         border: none;
         padding: 0;
-        margin-right: 8px;
+        margin-bottom: 10px;
+    }
+
+    .education-item h4 {
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .education-detail {
         font-size: 11px;
+    }
+
+    .education-date {
+        font-size: 11px;
+    }
+
+    /* OTHERS SECTION */
+    .others-content,
+    .others-category {
+        display: none;
     }
 
     /* SUMMARY TEXT */
