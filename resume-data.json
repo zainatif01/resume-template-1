@@ -1,10 +1,10 @@
 {
   "personal": {
     "name": "Zain Atif",
-    "title": "Web Developer & IT Professional",
+    "title": "Web Developer",
     "email": "zainatif15403@gmail.com",
     "phone": "+92 3148501486",
-    "location": "Karachi, Pakistan",
+    "location": "Gujrat, Pakistan",
     "dateOfBirth": "12/10/2004"
   },
   "summary": "Dynamic and dedicated professional with experience at Airmen Golf Club & Recreational Park, adept at enhancing the golfing experience. Proficient in Javascript, HTML, and CSS, I excel in problem-solving and communication, ensuring a seamless pace of play while managing multiple responsibilities effectively. Committed to delivering exceptional service and support.",
@@ -27,9 +27,8 @@
     "professional": ["Problem Solving", "Communication", "Customer Service", "Time Management"]
   },
   "languages": [
-    {"name": "Urdu", "level": "Native (C2)"},
-    {"name": "English", "level": "Upper Intermediate (B2)"},
-    {"name": "Punjabi", "level": "Upper Intermediate (B2)"}
+    {"name": "English", "level": "Intermediate (B2)"},
+    {"name": "Urdu", "level": "Native (C2)"}
   ],
   "education": [
     {
