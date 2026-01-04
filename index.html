@@ -4,249 +4,538 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zain Atif - Resume</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ATS/Print-friendly resume styles only */
-        body {
-            font-family: "Times New Roman", Times, serif;
-            color: #000;
-            background: white;
+        /* ===== BASE STYLES ===== */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #2980b9;
+            --text-color: #333333;
+            --text-light: #666666;
+            --bg-color: #ffffff;
+            --section-bg: #f8f9fa;
+            --border-color: #e1e5e9;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --radius: 6px;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            font-size: 11px;
-            line-height: 1.4;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        /* Header */
-        .resume-header {
-            text-align: left;
-            margin-bottom: 20px;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            padding: var(--spacing-md);
         }
-        
-        .name {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
+
+        .resume-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            overflow: hidden;
         }
-        
-        .contact-info {
-            font-size: 11px;
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: var(--spacing-xl);
+        }
+
+        .header-content {
             display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 5px;
+            gap: var(--spacing-md);
         }
-        
-        /* Sections */
-        .section {
-            margin-bottom: 15px;
-        }
-        
-        .section-title {
-            font-size: 13px;
+
+        .name-title h1 {
+            font-size: 2.5rem;
             font-weight: 700;
-            text-transform: uppercase;
-            border-bottom: 1px solid #000;
-            padding-bottom: 2px;
-            margin-top: 16px;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
         }
-        
-        /* Experience */
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .contact-info i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ===== MAIN CONTENT LAYOUT ===== */
+        .resume-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-xl);
+        }
+
+        @media (max-width: 768px) {
+            .resume-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+
+        /* ===== SUMMARY ===== */
+        .summary-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+
+        /* ===== EXPERIENCE ===== */
         .experience-item {
-            margin-bottom: 10px;
+            background: var(--section-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: var(--spacing-md);
         }
-        
+
+        .experience-item:last-child {
+            margin-bottom: 0;
+        }
+
         .job-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 2px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: 0.5rem;
         }
-        
-        .company {
-            font-size: 12px;
-            font-weight: 700;
+
+        .job-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
         }
-        
+
         .job-date {
-            font-size: 11px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
-        
+
         .job-position {
-            font-size: 11px;
-            font-style: italic;
-            margin-bottom: 4px;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
         }
-        
+
         .job-responsibilities {
-            margin: 0;
-            padding-left: 12px;
+            list-style: none;
+            padding-left: 0;
         }
-        
+
         .job-responsibilities li {
-            font-size: 11px;
-            margin-bottom: 2px;
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
         }
-        
-        /* Education */
+
+        .job-responsibilities li::before {
+            content: "•";
+            color: var(--secondary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* ===== EDUCATION ===== */
         .education-item {
-            margin-bottom: 8px;
+            background: var(--section-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--secondary-color);
+            margin-bottom: var(--spacing-md);
         }
-        
-        .education-degree {
-            font-size: 12px;
-            font-weight: 700;
+
+        .education-item:last-child {
+            margin-bottom: 0;
         }
-        
+
+        .education-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
         .education-detail {
-            font-size: 11px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
         }
-        
+
         .education-date {
-            font-size: 11px;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            font-weight: 500;
         }
-        
-        /* Others Section */
-        .others-subsection {
-            margin-bottom: 10px;
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            background: var(--section-bg);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
         }
-        
-        .subsection-title {
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 3px;
+
+        .sidebar-section {
+            margin-bottom: var(--spacing-lg);
         }
-        
-        .skills-list {
-            font-size: 11px;
-            margin-bottom: 5px;
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
         }
-        
-        .languages-list {
-            font-size: 11px;
+
+        /* ===== OTHERS SECTION ===== */
+        .skill-category {
+            margin-bottom: var(--spacing-md);
         }
-        
-        /* Page setup */
-        @page {
-            margin: 0.5in;
+
+        .skill-category:last-child {
+            margin-bottom: 0;
         }
-        
-        /* Utilities */
-        .bold {
-            font-weight: 700;
+
+        .skill-category h5 {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
-        
-        .italic {
-            font-style: italic;
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .skill-list:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-tag {
+            background: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ===== LANGUAGES ===== */
+        .languages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .language-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .language-level {
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        /* ===== PERSONAL DETAILS ===== */
+        .personal-detail p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .personal-detail strong {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--section-bg);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-sm);
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+            
+            .name-title h1 {
+                font-size: 2rem;
+            }
+            
+            .resume-content {
+                padding: var(--spacing-md);
+                gap: var(--spacing-md);
+            }
+            
+            .sidebar {
+                padding: var(--spacing-md);
+            }
+            
+            .education-item {
+                padding: var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .job-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .contact-info p {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .name-title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .skill-list {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="resume-header">
-        <h1 class="name">Zain Atif</h1>
-        <div class="contact-info">
-            <span>zainatif15403@gmail.com</span>
-            <span>+92 3148501486</span>
-            <span>Gujrat, Pakistan</span>
-        </div>
-    </div>
-    
-    <!-- Summary -->
-    <div class="section">
-        <h2 class="section-title">Summary</h2>
-        <p>I am a Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specializing in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. I have focused on creating high-performance, accessible web applications with modern UI/UX principles.</p>
-    </div>
-    
-    <!-- Work Experience -->
-    <div class="section">
-        <h2 class="section-title">Work Experience</h2>
-        
-        <div class="experience-item">
-            <div class="job-header">
-                <span class="company">TechNova Solutions Inc.</span>
-                <span class="job-date">08/2023 - 02/2024</span>
+    <div class="resume-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="name-title">
+                    <h1>Zain Atif</h1>
+                    <p class="subtitle">Front-End Developer</p>
+                </div>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> zainatif15403@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +92 3148501486</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Gujrat, Pakistan</p>
+                </div>
             </div>
-            <div class="job-position">Front-End Developer | San Francisco, CA</div>
-            <ul class="job-responsibilities">
-                <li>Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform</li>
-                <li>Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%</li>
-                <li>Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments</li>
-            </ul>
-        </div>
-        
-        <div class="experience-item">
-            <div class="job-header">
-                <span class="company">DigitalFlow Agency</span>
-                <span class="job-date">01/2023 - 04/2023</span>
+        </header>
+
+        <main class="resume-content">
+            <div class="main-column">
+                <!-- Professional Summary -->
+                <section class="section">
+                    <h2 class="section-title">Summary</h2>
+                    <p class="summary-text">
+                        I am a Front-End Developer with 2+ years of experience building clean, responsive, and user-friendly web interfaces. Specializing in TypeScript, HTML5, CSS3, and Tailwind CSS with expertise in Next.js development. I have focused on creating high-performance, accessible web applications with modern UI/UX principles.
+                    </p>
+                </section>
+
+                <!-- Work History -->
+                <section class="section">
+                    <h2 class="section-title">Work History</h2>
+                    <div>
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <h3>TechNova Solutions Inc.</h3>
+                                <span class="job-date">08/2023 - 02/2024</span>
+                            </div>
+                            <p class="job-position">Front-End Developer | San Francisco, CA</p>
+                            <ul class="job-responsibilities">
+                                <li>Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform</li>
+                                <li>Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%</li>
+                                <li>Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <h3>DigitalFlow Agency</h3>
+                                <span class="job-date">01/2023 - 04/2023</span>
+                            </div>
+                            <p class="job-position">Junior Front-End Developer | New York, NY</p>
+                            <ul class="job-responsibilities">
+                                <li>Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients</li>
+                                <li>Implemented Tailwind CSS frameworks across 15+ client projects, ensuring consistent branding</li>
+                                <li>Managed version control using Git/GitHub and deployed projects to Vercel hosting platform</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Education -->
+                <section class="section">
+                    <h2 class="section-title">Education</h2>
+                    <div>
+                        <div class="education-item">
+                            <h4>HSSC (Computer Science)</h4>
+                            <p class="education-detail">FDC Faisal, Karachi</p>
+                            <p class="education-date">07/2025</p>
+                        </div>
+                        <div class="education-item">
+                            <h4>BS (Software Engineering)</h4>
+                            <p class="education-detail">University of Gujrat, Gujrat</p>
+                            <p class="education-date">Expected: 06/2029</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-            <div class="job-position">Junior Front-End Developer | New York, NY</div>
-            <ul class="job-responsibilities">
-                <li>Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients</li>
-                <li>Implemented Tailwind CSS frameworks across 15+ client projects, ensuring consistent branding</li>
-                <li>Managed version control using Git/GitHub and deployed projects to Vercel hosting platform</li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- Education -->
-    <div class="section">
-        <h2 class="section-title">Education</h2>
-        
-        <div class="education-item">
-            <div class="education-degree">HSSC (Computer Science)</div>
-            <div class="education-detail">FDC Faisal, Karachi</div>
-            <div class="education-date">07/2025</div>
-        </div>
-        
-        <div class="education-item">
-            <div class="education-degree">BS (Software Engineering)</div>
-            <div class="education-detail">University of Gujrat, Gujrat</div>
-            <div class="education-date">Expected: 06/2029</div>
-        </div>
-    </div>
-    
-    <!-- Others -->
-    <div class="section">
-        <h2 class="section-title">Others</h2>
-        
-        <div class="others-subsection">
-            <div class="subsection-title">Skills</div>
-            <div class="skills-list">
-                <span class="bold">Technical Skills:</span> TypeScript/JavaScript, HTML5, CSS3/Tailwind CSS, Next.js, Vercel, Git & GitHub
+
+            <div class="sidebar">
+                <!-- Others Section (Skills & Languages) -->
+                <section class="sidebar-section">
+                    <h3 class="sidebar-title">Others</h3>
+                    <div>
+                        <div class="skill-category">
+                            <h5>Technical Skills</h5>
+                            <div class="skill-list">
+                                <span class="skill-tag">TypeScript/JavaScript</span>
+                                <span class="skill-tag">HTML5</span>
+                                <span class="skill-tag">CSS3/Tailwind CSS</span>
+                                <span class="skill-tag">Next.js</span>
+                                <span class="skill-tag">Vercel</span>
+                                <span class="skill-tag">Git & GitHub</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h5>Professional Skills</h5>
+                            <div class="skill-list">
+                                <span class="skill-tag">Problem Solving</span>
+                                <span class="skill-tag">Detail Oriented</span>
+                                <span class="skill-tag">Solution Oriented</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h5>Languages</h5>
+                            <div class="languages-container">
+                                <div class="language-item">
+                                    <span class="language-name">English</span>
+                                    <span class="language-level">Fluent B2</span>
+                                </div>
+                                <div class="language-item">
+                                    <span class="language-name">Urdu</span>
+                                    <span class="language-level">Native C2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Personal Details -->
+                <section class="sidebar-section">
+                    <h3 class="sidebar-title">Personal Details</h3>
+                    <div class="personal-detail">
+                        <p><strong>Date of Birth:</strong> 12/10/2004</p>
+                        <p><strong>Location:</strong> Gujrat, Pakistan</p>
+                    </div>
+                </section>
             </div>
-            <div class="skills-list">
-                <span class="bold">Professional Skills:</span> Problem Solving, Detail Oriented, Solution Oriented
-            </div>
-        </div>
-        
-        <div class="others-subsection">
-            <div class="subsection-title">Languages</div>
-            <div class="languages-list">
-                English (Fluent B2), Urdu (Native C2)
-            </div>
-        </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2025 Zain Atif. All rights reserved.</p>
+        </footer>
     </div>
-    
-    <!-- Personal Details -->
-    <div class="section">
-        <h2 class="section-title">Personal Details</h2>
-        <div>
-            <div><span class="bold">Date of Birth:</span> 12/10/2004</div>
-            <div><span class="bold">Location:</span> Gujrat, Pakistan</div>
-        </div>
-    </div>
-    
-    <script>
-        // Simple script to apply print styles
-        window.onload = function() {
-            // Apply print styles immediately
-            document.body.classList.add('print-mode');
-            
-            // Optional: Auto-print after a short delay
-            setTimeout(function() {
-                window.print();
-            }, 1000);
-        };
-    </script>
 </body>
 </html>
