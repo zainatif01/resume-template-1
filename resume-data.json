@@ -15,10 +15,11 @@
       "location": "San Francisco, CA",
       "startDate": "08/2023",
       "endDate": "02/2024",
-      "responsibilities":
-       [ "Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform",
+      "responsibilities": [
+        "Developed and maintained responsive web applications using Next.js and TypeScript for US-based SaaS platform",
         "Implemented custom UI components with Tailwind CSS, improving development efficiency by 30%",
-        "Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments" ]
+        "Implemented automated testing and CI/CD pipelines using GitHub Actions for seamless deployments"
+      ]
     },
     {
       "company": "DigitalFlow Agency",
@@ -26,30 +27,12 @@
       "location": "New York, NY",
       "startDate": "01/2023",
       "endDate": "04/2023",
-      "responsibilities":
-      [ "Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients",
+      "responsibilities": [
+        "Built responsive client websites using HTML5, CSS3, and JavaScript for multiple US-based clients",
         "Implemented Tailwind CSS frameworks across 15+ client projects, ensuring consistent branding",
-        "Managed version control using Git/GitHub and deployed projects to Vercel hosting platform" ]
+        "Managed version control using Git/GitHub and deployed projects to Vercel hosting platform"
+      ]
     }
-  ],
-  "skills": {
-    "technical": [
-      "TypeScript/JavaScript",
-      "HTML5",
-      "CSS3/Tailwind CSS",
-      "Next.js",
-      "Vercel",
-      "Git & GitHub"
-    ],
-    "professional": [
-      "Problem Solving",
-      "Detail Oriented",
-      "Solution Oriented"
-    ]
-  },
-  "languages": [
-    {"name": "English", "level": "Fluent B2"},
-    {"name": "Urdu", "level": "Native C2"}
   ],
   "education": [
     {
@@ -63,6 +46,27 @@
       "completionDate": "Expected: 06/2029"
     }
   ],
+  "others": {
+    "skills": {
+      "technical": [
+        "TypeScript/JavaScript",
+        "HTML5",
+        "CSS3/Tailwind CSS",
+        "Next.js",
+        "Vercel",
+        "Git & GitHub"
+      ],
+      "professional": [
+        "Problem Solving",
+        "Detail Oriented",
+        "Solution Oriented"
+      ]
+    },
+    "languages": [
+      {"name": "English", "level": "Fluent B2"},
+      {"name": "Urdu", "level": "Native C2"}
+    ]
+  },
   "footer": {
     "copyright": "© 2025 Zain Atif. All rights reserved.",
     "note": "Last updated: "
