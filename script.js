@@ -6,6 +6,7 @@ function formatDate(value) {
 }
 
 // ---------------- LOAD JSON ----------------
+// Function to load and parse the JSON data
 async function loadResumeData() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const resumeContainer = document.getElementById('resume-content');
@@ -14,27 +15,19 @@ async function loadResumeData() {
         const response = await fetch(`resume-data.json?version=${Date.now()}`);
         if (!response.ok) throw new Error('Failed to load JSON');
 
-        const data = await response.json();
-        renderResume(data);
+        const resumeData = await response.json();
+        renderResume(resumeData);
 
-    } catch (err) {
-        console.error('Resume load failed:', err);
-
-        const nameEl = document.getElementById('resume-name');
-        if (nameEl) nameEl.textContent = 'Failed to load resume';
-
-    } finally {
-        
-        if (loadingOverlay) {
-            loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                loadingOverlay.style.display = 'none';
-            }, 300);
-        }
-
-        if (resumeContainer) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
             resumeContainer.style.opacity = '1';
-        }
+        }, 600);
+
+    } catch (error) {
+        console.error(error);
+        loadingOverlay.style.display = 'none';
+        resumeContainer.style.opacity = '1';
     }
 }
 
