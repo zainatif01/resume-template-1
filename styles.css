@@ -458,6 +458,56 @@ body {
     z-index: 1;
 }
 
+/* PDF-specific styles */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .resume-container {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        break-inside: avoid;
+    }
+    
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .header {
+        -webkit-print-color-adjust: exact;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    }
+    
+    .download-section {
+        display: none !important;
+    }
+}
+
+/* Ensure consistent colors in PDF */
+.pdf-export {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+}
+
+/* Improve print quality */
+@media print {
+    .skill-tag,
+    .job-date,
+    .download-btn {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}
+
 @keyframes gradientSpin {
     0% {
         background-position: 0% 50%;
