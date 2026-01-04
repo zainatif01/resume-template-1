@@ -265,6 +265,23 @@ function setupPDFDownload() {
     });
 }
 
+function sectionTitle(pdf, text, x, y) {
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(text, x, y);
+    pdf.setFont('helvetica', 'normal');
+}
+
+function addParagraph(pdf, text, x, y, pageWidth, lineHeight) {
+    const lines = pdf.splitTextToSize(text, pageWidth - x - 15);
+    pdf.text(lines, x, y);
+    return y + lines.length * lineHeight;
+}
+
+function checkPage(pdf) {
+    if (pdf.internal.getCurrentPageInfo().pageNumber > 1) return;
+}
+
 // Initialize the resume when the page loads
 document.addEventListener('DOMContentLoaded', loadResumeData);
 
