@@ -255,7 +255,7 @@ function addPrintButton() {
         
         printBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            printResume();
+            printResumeOptimized();
         });
         
         downloadSection.appendChild(printBtn);
@@ -263,164 +263,179 @@ function addPrintButton() {
     }
 }
 
-// Improved print function
-function printResume() {
-    console.log('Printing resume...');
+// Optimized print function using JavaScript approach
+function printResumeOptimized() {
+    console.log('Starting optimized print...');
     
-    const originalButton = document.getElementById('print-btn');
-    const originalButtonHTML = originalButton.innerHTML;
+    const printBtn = document.getElementById('print-btn');
+    const originalButtonHTML = printBtn.innerHTML;
     
     try {
         // Show loading state
-        originalButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
-        originalButton.disabled = true;
+        printBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+        printBtn.disabled = true;
         
-        // Get the resume content
-        const resumeContent = document.getElementById('resume-content').innerHTML;
+        // Store original styles and classes
+        const originalBodyStyle = document.body.style.cssText;
+        const originalResumeContainerStyle = document.querySelector('.resume-container').style.cssText;
+        const originalDownloadSection = document.querySelector('.download-section');
+        const originalDownloadSectionDisplay = originalDownloadSection ? originalDownloadSection.style.display : '';
         
-        // Create a new window for printing
-        const printWindow = window.open('', '_blank', 'width=800,height=600');
-        
-        if (!printWindow) {
-            throw new Error('Popup blocked. Please allow popups for this site to print.');
+        // Hide download section for print
+        if (originalDownloadSection) {
+            originalDownloadSection.style.display = 'none';
         }
         
-        // Create print-optimized HTML
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Resume - Print</title>
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-                <style>
-                    /* Reset for print */
-                    @page {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        size: A4 portrait;
-                    }
-                    
-                    body {
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        font-family: 'Inter', sans-serif !important;
-                        background: white !important;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                        color-adjust: exact !important;
-                        width: 210mm !important;
-                        min-height: 297mm !important;
-                    }
-                    
-                    /* Hide non-print elements */
-                    .download-section,
-                    .print-btn,
-                    .download-btn {
-                        display: none !important;
-                    }
-                    
-                    /* Resume container styles */
-                    .resume-container {
-                        width: 210mm !important;
-                        min-height: 297mm !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        box-shadow: none !important;
-                        border-radius: 0 !important;
-                        background: white !important;
-                    }
-                    
-                    .header {
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
-                    }
-                    
-                    .resume-content {
-                        padding: 20px !important;
-                    }
-                    
-                    /* Page break control */
-                    .section, .experience-item, .sidebar-section {
-                        break-inside: avoid !important;
-                        page-break-inside: avoid !important;
-                    }
-                    
-                    /* Ensure colors print */
-                    .skill-tag,
-                    .job-date {
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                        color-adjust: exact !important;
-                    }
-                    
-                    /* Print-specific overrides */
-                    @media print {
-                        body {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                        }
-                        
-                        /* Remove any browser-added headers/footers */
-                        @page {
-                            margin: 0 !important;
-                            size: A4;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                ${resumeContent}
-                <script>
-                    // Auto-print and close when ready
-                    window.onload = function() {
-                        // Small delay to ensure styles are applied
-                        setTimeout(function() {
-                            window.print();
-                            
-                            // Close window after printing
-                            setTimeout(function() {
-                                window.close();
-                            }, 1000);
-                        }, 500);
-                    };
-                    
-                    // Fallback in case print dialog is cancelled
-                    window.onafterprint = function() {
-                        setTimeout(function() {
-                            window.close();
-                        }, 500);
-                    };
-                <\/script>
-            </body>
-            </html>
-        `);
+        // Apply print-optimized styles
+        const printStyle = document.createElement('style');
+        printStyle.id = 'print-optimized-styles';
+        printStyle.innerHTML = `
+            /* Print optimization styles */
+            @media print {
+                /* Remove all margins and paddings */
+                @page {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    size: A4 portrait;
+                }
+                
+                /* Reset body for print */
+                body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 210mm !important;
+                    min-height: 297mm !important;
+                    background: white !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    color-adjust: exact !important;
+                }
+                
+                /* Style resume container for print */
+                .resume-container {
+                    width: 210mm !important;
+                    min-height: 297mm !important;
+                    margin: 0 auto !important;
+                    padding: 15mm !important;
+                    box-shadow: none !important;
+                    border-radius: 0 !important;
+                    background: white !important;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+                
+                /* Ensure gradient prints */
+                .header {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
+                }
+                
+                /* Prevent page breaks in important sections */
+                .section,
+                .experience-item,
+                .sidebar-section,
+                .education-item {
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+                
+                /* Hide non-print elements */
+                .download-section {
+                    display: none !important;
+                }
+                
+                /* Ensure colors print correctly */
+                .skill-tag,
+                .job-date {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+            }
+            
+            /* Apply some styles immediately for preview */
+            body.printing-mode {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .printing-mode .resume-container {
+                box-shadow: none !important;
+                margin: 20px auto !important;
+            }
+            
+            .printing-mode .download-section {
+                display: none !important;
+            }
+        `;
         
-        printWindow.document.close();
+        document.head.appendChild(printStyle);
         
-        console.log('Print window opened successfully');
+        // Add printing mode class
+        document.body.classList.add('printing-mode');
+        
+        // Adjust resume container for better print preview
+        const resumeContainer = document.querySelector('.resume-container');
+        if (resumeContainer) {
+            resumeContainer.style.boxShadow = 'none';
+            resumeContainer.style.margin = '20px auto';
+        }
+        
+        // Small delay to ensure styles are applied
+        setTimeout(() => {
+            // Trigger print dialog
+            window.print();
+            
+            // Cleanup after print
+            cleanupPrintStyles();
+            
+        }, 300);
         
     } catch (error) {
-        console.error('Error printing resume:', error);
-        alert('Error printing: ' + error.message);
-        
-        // Fallback to basic print if new window fails
-        setTimeout(() => {
-            window.print();
-        }, 100);
-        
+        console.error('Error during print:', error);
+        alert('Error preparing print. Please try again.');
+        cleanupPrintStyles();
     } finally {
-        // Restore button state
-        if (originalButton) {
-            setTimeout(() => {
-                originalButton.innerHTML = originalButtonHTML;
-                originalButton.disabled = false;
-            }, 2000);
-        }
+        // Restore button after a delay (in case print dialog takes time)
+        setTimeout(() => {
+            printBtn.innerHTML = originalButtonHTML;
+            printBtn.disabled = false;
+        }, 2000);
     }
+    
+    // Function to cleanup print styles
+    function cleanupPrintStyles() {
+        // Remove print styles
+        const printStyleElement = document.getElementById('print-optimized-styles');
+        if (printStyleElement) {
+            printStyleElement.remove();
+        }
+        
+        // Remove printing mode class
+        document.body.classList.remove('printing-mode');
+        
+        // Restore original styles
+        document.body.style.cssText = originalBodyStyle;
+        
+        const resumeContainer = document.querySelector('.resume-container');
+        if (resumeContainer) {
+            resumeContainer.style.cssText = originalResumeContainerStyle;
+        }
+        
+        // Restore download section
+        const downloadSection = document.querySelector('.download-section');
+        if (downloadSection && originalDownloadSectionDisplay !== undefined) {
+            downloadSection.style.display = originalDownloadSectionDisplay;
+        }
+        
+        console.log('Print styles cleaned up');
+    }
+}
+
+// Alternative simple print function (fallback)
+function simplePrint() {
+    console.log('Using simple print...');
+    window.print();
 }
 
 // Initialize the resume when the page loads
@@ -449,4 +464,15 @@ window.addEventListener('load', function() {
         downloadBtn.setAttribute('data-pdf-setup', 'true');
         console.log('Manually setting up PDF download...');
     }
+});
+
+// Handle browser print events
+window.addEventListener('beforeprint', function() {
+    console.log('Before print event fired');
+    document.body.classList.add('print-active');
+});
+
+window.addEventListener('afterprint', function() {
+    console.log('After print event fired');
+    document.body.classList.remove('print-active');
 });
