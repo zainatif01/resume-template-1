@@ -216,6 +216,17 @@ function setupPDFDownload() {
     });
 }
 // ---------------- HELPER FUNCTIONS ----------------
+function sectionTitle(pdf, text, x, y) {
+    pdf.setFont("times", "bold");
+    pdf.setFontSize(11);
+    pdf.text(text, x, y);
+    drawRule(pdf, y + 1);
+}
+
+function drawRule(pdf, y) {
+    pdf.line(15, y, 195, y);
+}
+
 function addParagraph(pdf, text, x, y, maxWidth, lineHeight) {
     const lines = pdf.splitTextToSize(text, maxWidth);
     pdf.text(lines, x, y);
