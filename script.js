@@ -132,6 +132,7 @@ function renderEducation(education) {
         </div>
     `).join('');
 }
+
 // ---------------- PDF ----------------
 function setupPDFDownload() {
     document.getElementById('download-pdf-btn')
@@ -163,11 +164,12 @@ function setupPDFDownload() {
         y += 12;
 
         // -------- SUMMARY --------
-        sectionTitle(pdf, 'PROFESSIONAL SUMMARY', left, y);
-        y += 8;
+        sectionTitle(pdf, 'SUMMARY', left, y);
+        y += 10; // Increased from 8 to 10 for more space
         
         pdf.setFont('times', 'normal');
-        y = addParagraph(pdf, data.summary, left, y, 180, 4);
+        pdf.setFontSize(11); // 1. Changed font size to 11
+        y = addParagraph(pdf, data.summary, left, y, 180, 5); // Changed line height from 4 to 5
         y += 10;
 
         // -------- EXPERIENCE --------
@@ -195,17 +197,18 @@ function setupPDFDownload() {
             pdf.text(job.location, right, y, { align: 'right' });
             y += 5;
 
-            // Bullets
+            // Bullets - 4. Increased space between bullet points
             job.responsibilities.forEach(r => {
-            y = checkPageBreak(pdf, y);
-        
-            const lines = pdf.splitTextToSize(r, 170);
-        
-            pdf.text('•', left + 2, y);
-            pdf.text(lines, left + 6, y);
-        
-            y += lines.length * 4;
-        });
+                y = checkPageBreak(pdf, y);
+            
+                const lines = pdf.splitTextToSize(r, 170);
+            
+                pdf.text('•', left + 2, y);
+                pdf.text(lines, left + 6, y);
+            
+                // Increased from 4 to 6 for more space between bullets
+                y += lines.length * 6;
+            });
 
             y += 8;
         });
@@ -218,6 +221,7 @@ function setupPDFDownload() {
             y = checkPageBreak(pdf, y);
 
             pdf.setFont('times', 'bold');
+            pdf.setFontSize(11); // 3. Changed font size to 11
             pdf.text(edu.institution, left, y);
             pdf.text(
                 edu.completionDate,
@@ -228,32 +232,38 @@ function setupPDFDownload() {
             y += 5;
 
             pdf.setFont('times', 'normal');
+            pdf.setFontSize(11); // 3. Changed font size to 11
             pdf.text(edu.degree, left, y);
             y += 8;
         });
 
         // -------- OTHERS --------
         sectionTitle(pdf, 'OTHERS', left, y);
-            y += 10;
-            
-            y = addBullet(
-                pdf,
-                'Skills:',
-                [...data.skills.technical, ...data.skills.professional].join(', '),
-                left,
-                y,
-                170
-            );
-            y += 2;
-            
-            y = addBullet(
-                pdf,
-                'Languages:',
-                data.languages.map(l => `${l.name} (${l.level})`).join(', '),
-                left,
-                y,
-                170
-            );
+        y += 10;
+        
+        // Set font size for OTHERS section content
+        pdf.setFontSize(11); // 3. Changed font size to 11
+        
+        y = addBullet(
+            pdf,
+            'Skills:',
+            [...data.skills.technical, ...data.skills.professional].join(', '),
+            left,
+            y,
+            170,
+            5 // Increased line height from default 4 to 5
+        );
+        y += 2;
+        
+        y = addBullet(
+            pdf,
+            'Languages:',
+            data.languages.map(l => `${l.name} (${l.level})`).join(', '),
+            left,
+            y,
+            170,
+            5 // Increased line height from default 4 to 5
+        );
             
         pdf.save(`${data.personal.name.replace(/\s+/g, '_')}_Resume.pdf`);
     });
