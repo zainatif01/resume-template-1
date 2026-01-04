@@ -31,8 +31,9 @@
       "TypeScript/JavaScript",
       "HTML5",
       "CSS3/Tailwind CSS",
+      "Next.js",
+      "Vercel",
       "Git & GitHub",
-      "Vercel"
     ],
     "professional": [
       "Problem Solving",
@@ -52,7 +53,7 @@
     },
     {
       "degree": "BS (Software Engineering)",
-      "institution": "University of Gujrat",
+      "institution": "University of Gujrat, Gujrat",
       "completionDate": "Expected: 06/2029"
     }
   ],
