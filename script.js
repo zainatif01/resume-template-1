@@ -1,72 +1,128 @@
-// Simple JavaScript for interactive elements
-document.addEventListener('DOMContentLoaded', function() {
-    // Current year in footer
-    const footerYear = document.querySelector('.footer p');
-    if (footerYear && footerYear.textContent.includes('2024')) {
-        const currentYear = new Date().getFullYear();
-        footerYear.innerHTML = footerYear.innerHTML.replace('2024', currentYear);
-    }
-    
-    // Print functionality
-    const printBtn = document.createElement('button');
-    printBtn.innerHTML = '<i class="fas fa-print"></i> Print Resume';
-    printBtn.className = 'print-btn';
-    printBtn.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #2c3e50;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        z-index: 100;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    `;
-    
-    printBtn.onclick = () => window.print();
-    document.body.appendChild(printBtn);
-    
-    // Hide print button when printing
-    const style = document.createElement('style');
-    style.textContent = `
-        @media print {
-            .print-btn { display: none !important; }
+// Function to load and parse the JSON data
+async function loadResumeData() {
+    try {
+        const response = await fetch('resume-data.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const resumeData = await response.json();
+        renderResume(resumeData);
+    } catch (error) {
+        console.error('Error loading resume data:', error);
+        document.getElementById('resume-name').textContent = 'Error loading resume';
+    }
+}
+
+// Function to render all resume data
+function renderResume(data) {
+    // Personal Information
+    document.getElementById('resume-name').textContent = data.personal.name;
+    document.getElementById('resume-title').textContent = data.personal.title;
+    
+    // Contact Info
+    const contactInfo = document.getElementById('contact-info');
+    contactInfo.innerHTML = `
+        <p><i class="fas fa-envelope"></i> ${data.personal.email}</p>
+        <p><i class="fas fa-phone"></i> ${data.personal.phone}</p>
+        <p><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</p>
     `;
-    document.head.appendChild(style);
     
-    // Smooth hover effects
-    const skillTags = document.querySelectorAll('.skill-tag');
-    skillTags.forEach(tag => {
-        tag.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px)';
-        });
-        
-        tag.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
+    // Professional Summary
+    document.getElementById('summary-text').textContent = data.summary;
     
-    // Add subtle animation to job items
-    const jobItems = document.querySelectorAll('.experience-item');
-    jobItems.forEach(item => {
-        item.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-        
-        item.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateX(5px)';
-            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-        });
-        
-        item.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateX(0)';
-            this.style.boxShadow = 'none';
-        });
+    // Work Experience
+    renderWorkExperience(data.workExperience);
+    
+    // Skills
+    renderSkills(data.skills);
+    
+    // Languages
+    renderLanguages(data.languages);
+    
+    // Education
+    renderEducation(data.education);
+    
+    // Personal Details
+    document.getElementById('personal-details').innerHTML = `
+        <p><strong>Date of Birth:</strong> ${data.personal.dateOfBirth}</p>
+        <p><strong>Location:</strong> ${data.personal.location}</p>
+    `;
+    
+    // Footer
+    document.getElementById('footer-text').textContent = data.footer.copyright;
+}
+
+// Function to render work experience
+function renderWorkExperience(experience) {
+    const container = document.getElementById('work-experience');
+    container.innerHTML = '';
+    
+    experience.forEach(job => {
+        const jobElement = document.createElement('div');
+        jobElement.className = 'experience-item';
+        jobElement.innerHTML = `
+            <div class="job-header">
+                <h3>${job.company}</h3>
+                <span class="job-date">${job.startDate} - ${job.endDate}</span>
+            </div>
+            <p class="job-position">${job.position} | ${job.location}</p>
+            <ul class="job-responsibilities">
+                ${job.responsibilities.map(resp => `<li>${resp}</li>`).join('')}
+            </ul>
+        `;
+        container.appendChild(jobElement);
     });
-});
+}
+
+// Function to render skills
+function renderSkills(skills) {
+    const container = document.getElementById('skills-section');
+    container.innerHTML = `
+        <div class="skill-category">
+            <h4>Technical Skills</h4>
+            <div class="skill-list">
+                ${skills.technical.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            </div>
+        </div>
+        <div class="skill-category">
+            <h4>Professional Skills</h4>
+            <div class="skill-list">
+                ${skills.professional.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// Function to render languages
+function renderLanguages(languages) {
+    const container = document.getElementById('languages-list');
+    container.innerHTML = languages.map(lang => `
+        <div class="language-item">
+            <span class="language-name">${lang.name}</span>
+            <span class="language-level">${lang.level}</span>
+        </div>
+    `).join('');
+}
+
+// Function to render education
+function renderEducation(education) {
+    const container = document.getElementById('education-list');
+    container.innerHTML = education.map(edu => `
+        <div class="education-item">
+            <h4>${edu.degree}</h4>
+            <p class="education-detail">${edu.institution}</p>
+            <p class="education-date">${edu.completionDate}</p>
+        </div>
+    `).join('');
+}
+
+// Initialize the resume when the page loads
+document.addEventListener('DOMContentLoaded', loadResumeData);
+
+// Optional: Add function to update JSON from a form (for advanced use)
+function updateResumeData(newData) {
+    // This function could be expanded to save data back to JSON
+    // Note: This requires server-side implementation for actual saving
+    console.log('Data updated (simulated):', newData);
+    renderResume(newData);
+}
