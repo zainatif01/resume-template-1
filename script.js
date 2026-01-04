@@ -277,25 +277,17 @@ function printResumeOptimized() {
         
         // Store original styles and classes
         const originalBodyStyle = document.body.style.cssText;
-        const originalResumeContainerStyle = document.querySelector('.resume-container').style.cssText;
-        const originalDownloadSection = document.querySelector('.download-section');
-        const originalDownloadSectionDisplay = originalDownloadSection ? originalDownloadSection.style.display : '';
+        const originalBodyClass = document.body.className;
         
-        // Hide download section for print
-        if (originalDownloadSection) {
-            originalDownloadSection.style.display = 'none';
-        }
-        
-        // Apply print-optimized styles
+        // Add print-specific styles
         const printStyle = document.createElement('style');
         printStyle.id = 'print-optimized-styles';
         printStyle.innerHTML = `
             /* Print optimization styles */
             @media print {
-                /* Remove all margins and paddings */
+                /* Remove all margins and paddings from the page */
                 @page {
-                    margin: 0 !important;
-                    padding: 0 !important;
+                    margin: 15mm 10mm !important;
                     size: A4 portrait;
                 }
                 
@@ -303,41 +295,54 @@ function printResumeOptimized() {
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
-                    width: 210mm !important;
-                    min-height: 297mm !important;
                     background: white !important;
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
                     color-adjust: exact !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    font-size: 11pt !important;
                 }
                 
-                /* Style resume container for print */
+                /* Keep the natural flow and layout */
+                body * {
+                    visibility: visible !important;
+                }
+                
+                /* Resume container styling for print */
                 .resume-container {
-                    width: 210mm !important;
-                    min-height: 297mm !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
                     margin: 0 auto !important;
-                    padding: 15mm !important;
+                    padding: 0 !important;
                     box-shadow: none !important;
                     border-radius: 0 !important;
                     background: white !important;
-                    page-break-inside: avoid !important;
-                    break-inside: avoid !important;
+                    break-inside: auto !important;
                 }
                 
-                /* Ensure gradient prints */
+                /* Header styling for print */
                 .header {
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
-                    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
+                    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+                    padding: 1.5rem !important;
+                    color: white !important;
                 }
                 
-                /* Prevent page breaks in important sections */
-                .section,
-                .experience-item,
-                .sidebar-section,
-                .education-item {
-                    page-break-inside: avoid !important;
-                    break-inside: avoid !important;
+                /* Main content layout */
+                .resume-content {
+                    padding: 1.5rem !important;
+                    display: grid !important;
+                    grid-template-columns: 2fr 1fr !important;
+                    gap: 1.5rem !important;
+                }
+                
+                /* Sidebar styling */
+                .sidebar {
+                    background: var(--section-bg) !important;
+                    padding: 1.5rem !important;
+                    border-radius: var(--radius) !important;
                 }
                 
                 /* Hide non-print elements */
@@ -350,36 +355,92 @@ function printResumeOptimized() {
                 .job-date {
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
+                    border: 1px solid var(--border-color) !important;
+                }
+                
+                /* Prevent awkward page breaks */
+                .section,
+                .experience-item,
+                .sidebar-section {
+                    break-inside: avoid !important;
+                    page-break-inside: avoid !important;
+                }
+                
+                /* Footer styling */
+                .footer {
+                    margin-top: 2rem !important;
+                    padding: 1rem !important;
+                    background: var(--section-bg) !important;
+                    border-top: 1px solid var(--border-color) !important;
+                }
+                
+                /* Allow multi-page printing */
+                .resume-container {
+                    height: auto !important;
+                    min-height: auto !important;
+                }
+                
+                /* Handle page breaks gracefully */
+                .section + .section {
+                    margin-top: 0.5rem !important;
+                }
+                
+                /* Font sizes for print */
+                .name-title h1 {
+                    font-size: 2rem !important;
+                }
+                
+                .section-title {
+                    font-size: 1.3rem !important;
+                }
+                
+                .summary-text,
+                .job-position,
+                .education-detail {
+                    font-size: 10.5pt !important;
+                }
+                
+                .job-responsibilities li,
+                .personal-detail p {
+                    font-size: 10pt !important;
+                }
+                
+                /* Reduce spacing for print */
+                .section {
+                    margin-bottom: 1.2rem !important;
+                }
+                
+                .experience-item {
+                    margin-bottom: 1rem !important;
+                    padding: 1rem !important;
+                }
+                
+                .sidebar-section {
+                    margin-bottom: 1.2rem !important;
                 }
             }
             
-            /* Apply some styles immediately for preview */
-            body.printing-mode {
+            /* Preview styles before print */
+            body.print-preview {
                 background: white !important;
-                padding: 0 !important;
+                padding: 20px !important;
             }
             
-            .printing-mode .resume-container {
-                box-shadow: none !important;
+            .print-preview .resume-container {
+                box-shadow: 0 0 20px rgba(0,0,0,0.1) !important;
                 margin: 20px auto !important;
+                max-width: 800px !important;
             }
             
-            .printing-mode .download-section {
+            .print-preview .download-section {
                 display: none !important;
             }
         `;
         
         document.head.appendChild(printStyle);
         
-        // Add printing mode class
-        document.body.classList.add('printing-mode');
-        
-        // Adjust resume container for better print preview
-        const resumeContainer = document.querySelector('.resume-container');
-        if (resumeContainer) {
-            resumeContainer.style.boxShadow = 'none';
-            resumeContainer.style.margin = '20px auto';
-        }
+        // Add print preview class
+        document.body.classList.add('print-preview');
         
         // Small delay to ensure styles are applied
         setTimeout(() => {
@@ -389,7 +450,7 @@ function printResumeOptimized() {
             // Cleanup after print
             cleanupPrintStyles();
             
-        }, 300);
+        }, 500);
         
     } catch (error) {
         console.error('Error during print:', error);
@@ -411,22 +472,12 @@ function printResumeOptimized() {
             printStyleElement.remove();
         }
         
-        // Remove printing mode class
-        document.body.classList.remove('printing-mode');
+        // Remove print preview class
+        document.body.classList.remove('print-preview');
         
         // Restore original styles
         document.body.style.cssText = originalBodyStyle;
-        
-        const resumeContainer = document.querySelector('.resume-container');
-        if (resumeContainer) {
-            resumeContainer.style.cssText = originalResumeContainerStyle;
-        }
-        
-        // Restore download section
-        const downloadSection = document.querySelector('.download-section');
-        if (downloadSection && originalDownloadSectionDisplay !== undefined) {
-            downloadSection.style.display = originalDownloadSectionDisplay;
-        }
+        document.body.className = originalBodyClass;
         
         console.log('Print styles cleaned up');
     }
