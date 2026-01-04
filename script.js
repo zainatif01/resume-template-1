@@ -263,7 +263,7 @@ function setupPDFDownload() {
         });
 
         // Fix 2: Apply SECTION_SPACING before OTHERS
-        y += SECTION_SPACING - ITEM_SPACING; // Adjust since last education entry added ITEM_SPACING
+        y += SECTION_SPACING; // Adjust since last education entry added ITEM_SPACING
         
         // -------- OTHERS --------
         sectionTitle(pdf, 'OTHERS', left, y);
